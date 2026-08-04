@@ -1,0 +1,19 @@
+{
+	"name": "drophaul",
+	"owner": {
+		"name": "DropHaul",
+		"email": "support@drophaul.app"
+	},
+	"description": "Official DropHaul MCP integration hub package for Claude Code.",
+	"plugins": [
+		{
+			"name": "drophaul",
+			"source": "./",
+			"description": "Claude Code workflows for the DropHaul MCP integration hub.",
+			"homepage": "https://www.drophaul.app/mcp",
+			"repository": "https://github.com/promotion-devotion/drophaul-mcp",
+			"category": "productivity",
+			"tags": ["dispatch", "fleet", "invoicing", "mcp"]
+		}
+	]
+}

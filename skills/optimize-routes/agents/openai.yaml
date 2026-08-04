@@ -1,0 +1,4 @@
+interface:
+  display_name: "Optimize Routes"
+  short_description: "Review and optimize DropHaul routes safely"
+  default_prompt: "Use $optimize-routes to inspect route constraints and credits, submit an approved optimization, and summarize the result."

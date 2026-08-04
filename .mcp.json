@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"drophaul": {
+			"type": "http",
+			"url": "${DROPHAUL_MCP_URL:-https://majestic-emu-550.convex.site/mcp}",
+			"headers": {
+				"Authorization": "Bearer ${DROPHAUL_MCP_KEY}"
+			}
+		}
+	}
+}

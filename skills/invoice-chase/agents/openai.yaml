@@ -1,0 +1,4 @@
+interface:
+  display_name: "Invoice Chase"
+  short_description: "Plan and execute safe invoice follow-up"
+  default_prompt: "Use $invoice-chase to review unpaid invoices, prepare customer follow-up, and require approval before sending anything."

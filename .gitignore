@@ -1,0 +1,11 @@
+# Credentials must never enter this repository.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local tooling
+.DS_Store
+node_modules/
+.claude/

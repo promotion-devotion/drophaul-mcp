@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan My Day"
+  short_description: "Build a safe, prioritized DropHaul day plan"
+  default_prompt: "Use $plan-my-day to review today’s DropHaul schedule, route, weather, and alerts before proposing a prioritized plan."

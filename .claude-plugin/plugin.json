@@ -1,0 +1,19 @@
+{
+	"name": "drophaul",
+	"version": "1.0.0",
+	"description": "DropHaul MCP integration hub package for Claude Code: plan routes, review dispatch, and manage invoice follow-up.",
+	"author": {
+		"name": "DropHaul",
+		"email": "support@drophaul.app"
+	},
+	"homepage": "https://www.drophaul.app/mcp",
+	"repository": "https://github.com/promotion-devotion/drophaul-mcp",
+	"keywords": [
+		"dispatch",
+		"fleet",
+		"invoicing",
+		"mcp",
+		"portable-sanitation"
+	],
+	"license": "LicenseRef-Proprietary"
+}
