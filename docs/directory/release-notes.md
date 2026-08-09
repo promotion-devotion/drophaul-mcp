@@ -14,4 +14,3 @@
 
 This is release copy for a proposed first submission. It does not claim that
 version 1.0.0 has been submitted, approved, or published.
-
