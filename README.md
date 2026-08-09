@@ -17,20 +17,23 @@ HTTPS endpoint operated by DropHaul. What ships here is:
 
 ---
 
-## Status: release candidate prepared; external publication pending
+## Status: public package published; external service approval pending
 
 The bundled configuration points at
-`https://majestic-emu-550.convex.site/mcp`. A sanctioned staging smoke completed
-the MCP handshake, listed all 98 tools, and called the read-only identity tool.
-That staging metadata snapshot predates the release candidate's complete tool
-annotations and OAuth security schemes. The backend must be deployed and
-rescanned, and the OpenAI OAuth installation must be dogfooded, before public
-onboarding. This local package is not evidence of repository publication,
-vendor submission, approval, or directory availability.
+`https://majestic-emu-550.convex.site/mcp`. A development MCP PAT smoke completed
+`initialize`, listed all 98 tools, and called the read-only `whoami` tool on the
+configured personal development deployment. It did not exercise staging or
+production OAuth, and no staging deployment is currently recorded. The backend
+must be deployed and rescanned, and the OpenAI OAuth installation must be
+dogfooded, before public onboarding. The allowlisted package is published at
+[`promotion-devotion/drophaul-mcp`](https://github.com/promotion-devotion/drophaul-mcp),
+and an isolated Codex marketplace install from public `main` passed. Repository
+publication and package installation are not evidence of vendor submission,
+approval, or directory availability.
 
 Installing a package does not establish a vendor listing or grant data access. OAuth sign-in is required
-for the hosted endpoint, but no OpenAI installation is currently verified to complete the release
-candidate flow. Only clients already registered with DropHaul may be eligible until OAuth dogfood passes.
+for the hosted endpoint, but no client is currently verified to complete the live flow for the OpenAI
+release-candidate OAuth installation. Only clients already registered with DropHaul may be eligible until OAuth dogfood passes.
 Installing or adding a server does not register a new OAuth client. For a separate
 deployment, configure that client with that deployment's literal HTTPS `/mcp` endpoint. Verify any
 nonproduction endpoint with your DropHaul operator before relying on it.
@@ -73,20 +76,17 @@ Full per-scope descriptions are in [`docs/installation.md`](docs/installation.md
 
 ### 1. Claude Code
 
-The public-repository install command will be published only with the final
-allowlisted release and its fresh GitHub installation evidence. Do not install
-the current repository snapshot.
-
-After the release backend and OAuth client are verified, the installed adapter uses
-the literal hosted URL `https://majestic-emu-550.convex.site/mcp`, and Claude Code completes OAuth; it
-does not read a token environment variable or send a bundled Authorization header.
-
-Until the final release is published, install only from a validated local distribution, not the current public repository:
+Add the published DropHaul marketplace, then install its plugin:
 
 ```bash
-claude plugin marketplace add ./
+claude plugin marketplace add promotion-devotion/drophaul-mcp
 claude plugin install drophaul@drophaul
 ```
+
+The installed adapter uses the literal hosted URL
+`https://majestic-emu-550.convex.site/mcp`. After hosted OAuth dogfood and
+release-candidate verification passes, Claude Code completes OAuth; it does not
+read a token environment variable or send a bundled Authorization header.
 
 For an advanced direct-PAT setup without the plugin, add the server directly:
 
@@ -121,13 +121,14 @@ More detail: [`docs/claude-ai.md`](docs/claude-ai.md).
 
 ### 3. Codex CLI
 
-The final generated repository is also a Codex marketplace. After it is
-published, add it and install DropHaul from **Plugins** in the ChatGPT desktop
-app:
+The published repository is also a Codex marketplace. Add it and install
+DropHaul from **Plugins** in the ChatGPT desktop app. A clean isolated install
+from public `main` verified version 1.0.0 with `ON_INSTALL` authentication:
 
 ```bash
 codex plugin marketplace add promotion-devotion/drophaul-mcp
-codex plugin marketplace list
+codex plugin add drophaul@drophaul
+codex plugin list
 ```
 
 For a direct MCP-only setup without the bundled skills, use:
@@ -149,9 +150,10 @@ default_tools_approval_mode = "writes"
 ```
 
 `default_tools_approval_mode = "writes"` makes Codex prompt for any tool not marked read-only —
-recommended for a dispatch system. After the registered Codex OAuth client passes release-candidate
-dogfood, Codex completes OAuth outside the repository. Use the advanced direct-PAT section above only
-for a deliberate local bearer setup, and never put a token value in TOML.
+recommended for a dispatch system. After hosted OAuth dogfood and
+release-candidate verification passes, Codex completes OAuth outside the
+repository. Use the advanced direct-PAT section above only for a deliberate
+local bearer setup, and never put a token value in TOML.
 
 More detail: [`docs/codex.md`](docs/codex.md).
 
@@ -166,9 +168,10 @@ More detail: [`docs/codex.md`](docs/codex.md).
    and complete the DropHaul OAuth sign-in.
 6. Review the tools and metadata discovered from the server.
 
-After release-candidate OAuth dogfood succeeds, the server's OpenAI
-connector `search` and `fetch` shapes allow read-only tools to support company-knowledge workflows;
-full operational tools require the developer-mode connection.
+After hosted OAuth dogfood and release-candidate verification passes, the
+server's OpenAI connector `search` and `fetch` shapes allow read-only tools
+to support company-knowledge workflows; full operational tools require the
+developer-mode connection.
 
 ChatGPT's connector surface changes often. If the labels differ, follow OpenAI's current
 [Connect your MCP server to ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt)

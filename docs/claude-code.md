@@ -3,12 +3,12 @@
 Claude Code can install the DropHaul plugin or connect directly. Use Claude
 Code 2.1.64 or later for current OAuth metadata behavior.
 
-## Install from a local distribution
+## Install the published package
 
-From the root of an allowlisted distribution:
+Add the public DropHaul marketplace, then install its plugin:
 
 ```sh
-claude plugin marketplace add ./
+claude plugin marketplace add promotion-devotion/drophaul-mcp
 claude plugin install drophaul@drophaul
 ```
 
@@ -21,23 +21,19 @@ The plugin provides four prompt-only skills:
 - `/drophaul:dispatch-review`
 - `/drophaul:invoice-chase`
 
-The bundled `.mcp.json` uses the literal production endpoint `https://majestic-emu-550.convex.site/mcp` with no header or environment interpolation. Claude Code performs OAuth for the HTTP server; use the separate direct-PAT setup below only when an operator deliberately chooses a local bearer credential.
+The bundled `.mcp.json` uses the literal production endpoint
+`https://majestic-emu-550.convex.site/mcp` with no header or environment
+interpolation. The package uses client-managed OAuth for the HTTP server; use
+the separate direct-PAT setup below only when an operator deliberately chooses
+a local bearer credential.
 
-## Install from the vendor-neutral MCP hub after public package release
+## Publication and install evidence
 
-After publication authorization and the public repository release:
-
-```sh
-claude plugin marketplace add promotion-devotion/drophaul-mcp
-claude plugin install drophaul@drophaul
-```
-
-Claude Code marketplace installation requires the Git repository above. The
-repository is not considered published until an approved package push occurs
-and a fresh install from GitHub passes. The local staging tree does not
-substitute for publication evidence. Other MCP clients, including ChatGPT
-directory review, use the deployed endpoint and public policy/support metadata;
-they do not require a Claude-named repository or this marketplace package.
+The final allowlisted package is published on public `main`. An isolated Codex
+marketplace add and `drophaul@drophaul` install from that Git source passed at
+version 1.0.0 with `ON_INSTALL` authentication. A fresh Claude Code install and
+hosted OAuth smoke remain separate pending checks. Package publication is not
+evidence of a Claude or OpenAI directory listing.
 
 ## Advanced direct PAT setup
 

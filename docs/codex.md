@@ -12,18 +12,19 @@ Use the client-managed OAuth setup for normal installs. Do not configure a PAT a
 
 The generated repository includes a repo-scoped marketplace at
 `.agents/plugins/marketplace.json` and an installable package at
-`plugins/drophaul`. After the final generated tree is published, add its public
-repository as a marketplace:
+`plugins/drophaul`. The final generated tree is published on public `main`.
+Add its repository as a marketplace, install DropHaul, and inspect the result:
 
 ```sh
 codex plugin marketplace add promotion-devotion/drophaul-mcp
-codex plugin marketplace list
+codex plugin add drophaul@drophaul
+codex plugin list
 ```
 
-Then open **Plugins** in the ChatGPT desktop app, choose the DropHaul
-marketplace, and install DropHaul. For release-candidate testing, add the root
-of an isolated generated distribution instead of the current public repository.
-Do not test by editing a normal user's plugin directories.
+An isolated `CODEX_HOME` verified this exact public install at version 1.0.0
+with `ON_INSTALL` authentication, then removed its temporary state. This proves
+package discovery and installation, not hosted OAuth or public directory
+approval. Do not test by editing a normal user's plugin directories.
 
 ## OAuth setup
 
