@@ -19,6 +19,28 @@ Start with reads. Add one write scope only for a named workflow. Removing a user
 - Rotate a PAT by creating the replacement, validating it with `whoami`, updating the client, and revoking the old token. Do not leave both active longer than the handoff.
 - Disconnect OAuth in the client and revoke consent in DropHaul when access ends.
 
+## Ingress rate limiting
+
+Before a bearer credential is verified, the MCP server charges a source bucket
+from a single valid `CF-Connecting-IP` value. It never selects a key from
+`X-Forwarded-For`: a missing, malformed, or multi-value trusted header uses the
+shared fail-closed `unknown` bucket instead. This limits credential-verification
+work without treating a caller-controlled forwarding chain as identity.
+
+Cloudflare documents that
+[`CF-Connecting-IP`](https://developers.cloudflare.com/fundamentals/reference/http-headers/)
+is sent only from its edge to an origin and recommends it over
+`X-Forwarded-For`, whose chain can include values received from the client. The
+trust boundary therefore depends on this MCP host continuing to receive traffic
+through Cloudflare; it is not a general assertion about arbitrary direct-origin
+requests.
+
+**Observed host evidence (2026-08-08).** Production protected-resource metadata
+returned HTTP 200, and an unauthenticated Streamable HTTP initialize request
+returned a 401 Bearer challenge with `resource_metadata`. That demonstrates the
+public discovery and OAuth challenge surface; it is not an authenticated tool-call
+acceptance test.
+
 ## Writes and approvals
 
 Read the tool name, selected company, public display IDs, changed fields, and side effects before approval. Do not use **Allow always** for destructive or externally visible tools.

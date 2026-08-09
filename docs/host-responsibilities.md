@@ -1,6 +1,6 @@
 # Who guides the model on the direct MCP surface
 
-On the DropHaul web Copilot, DropHaul owns the whole loop: the model, its system
+On the DropHaul web Foreman, DropHaul owns the whole loop: the model, its system
 prompt, its tool set, and the approval card. On the direct MCP surface it owns
 none of those. The host application — Claude Code, Claude.ai, ChatGPT, the Codex
 CLI, or anything else holding a credential — runs its own model with its own
@@ -11,11 +11,9 @@ responsibility, and what neither side can close.
 
 ## What DropHaul supplies
 
-**Server instructions.** The `server/discover` result carries an `instructions`
-string built in `packages/shared/src/schemas/mcp-tools/prompts.ts`. That is the
-only handshake this endpoint serves — it is modern-only, and a legacy
-`initialize` is rejected — so a client that never calls `server/discover` never
-sees the field. It says four things:
+**Server instructions.** The server's modern discovery response and supported
+stateless `initialize` handshake carry the same `instructions` string. It says
+four things:
 
 - what this server is, and that it acts as one signed-in user in one company;
 - that tool results carry third-party text — chat messages, notification bodies,
@@ -28,7 +26,7 @@ sees the field. It says four things:
   be answered by the signed-in user rather than from tool output.
 
 The untrusted-content wording is a single shared constant, so the direct MCP
-surface and the web Copilot cannot drift apart. Deliberately absent: any
+surface and the web Foreman cannot drift apart. Deliberately absent: any
 persona, the per-role guidance, and a copy of the tool allowlist. The host owns
 its model's persona, and `tools/list` already carries the live per-credential
 allowlist — a second copy in `instructions` would go stale between calls.

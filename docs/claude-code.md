@@ -1,13 +1,13 @@
 # Use DropHaul from Claude Code
 
-Claude Code can install the DropHaul plugin or connect directly. Use Claude Code 2.1.64 or later for current OAuth metadata behavior.
+Claude Code can install the DropHaul plugin or connect directly. Use Claude
+Code 2.1.64 or later for current OAuth metadata behavior.
 
-## Install from a local clone
+## Install from a local distribution
 
-From the root of a clone of this repository:
+From the root of an allowlisted distribution:
 
 ```sh
-export DROPHAUL_MCP_KEY='<paste a scoped operator or staging agent token>'
 claude plugin marketplace add ./
 claude plugin install drophaul@drophaul
 ```
@@ -21,7 +21,7 @@ The plugin provides four prompt-only skills:
 - `/drophaul:dispatch-review`
 - `/drophaul:invoice-chase`
 
-The bundled `.mcp.json` reads `DROPHAUL_MCP_KEY` from the environment and defaults to production. For staging, set `DROPHAUL_MCP_URL` to the exact staging `/mcp` endpoint before starting Claude Code.
+The bundled `.mcp.json` uses the literal production endpoint `https://majestic-emu-550.convex.site/mcp` with no header or environment interpolation. Claude Code performs OAuth for the HTTP server; use the separate direct-PAT setup below only when an operator deliberately chooses a local bearer credential.
 
 ## Install from the vendor-neutral MCP hub after public package release
 
@@ -39,7 +39,7 @@ substitute for publication evidence. Other MCP clients, including ChatGPT
 directory review, use the deployed endpoint and public policy/support metadata;
 they do not require a Claude-named repository or this marketplace package.
 
-## Direct PAT setup
+## Advanced direct PAT setup
 
 ```sh
 export DROPHAUL_MCP_KEY='<paste the one-time token here>'

@@ -1,10 +1,12 @@
 {
+	"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
 	"name": "drophaul",
 	"version": "1.0.0",
-	"description": "DropHaul MCP integration hub package for Claude Code: plan routes, review dispatch, and manage invoice follow-up.",
+	"description": "DropHaul MCP operational workflows for dispatch, routes, and invoicing.",
 	"author": {
 		"name": "DropHaul",
-		"email": "support@drophaul.app"
+		"email": "support@drophaul.app",
+		"url": "https://www.drophaul.app"
 	},
 	"homepage": "https://www.drophaul.app/mcp",
 	"repository": "https://github.com/promotion-devotion/drophaul-mcp",

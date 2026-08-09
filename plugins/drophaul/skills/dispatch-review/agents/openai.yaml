@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dispatch Review"
+  short_description: "Review dispatch readiness and safe changes"
+  default_prompt: "Use $dispatch-review to assess dispatch readiness, preview assignments, and require approval before applying changes."
