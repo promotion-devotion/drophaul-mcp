@@ -9,7 +9,7 @@
 	},
 	"homepage": "https://www.drophaul.app/mcp",
 	"repository": "https://github.com/promotion-devotion/drophaul-mcp",
-	"license": "LicenseRef-Proprietary",
+	"license": "Apache-2.0",
 	"keywords": ["dispatch", "fleet", "invoicing", "mcp", "portable-sanitation"],
 	"skills": "./skills/",
 	"mcpServers": "./.mcp.json",

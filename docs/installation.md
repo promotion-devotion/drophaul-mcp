@@ -12,12 +12,15 @@ That is the production Convex deployment (`majestic-emu-550`) HTTP action. Stagi
 
 The server speaks **Streamable HTTP** (`POST` + `OPTIONS` only — no `GET` session stream, no legacy SSE endpoint). It accepts either a DropHaul personal access token as a bearer credential, or an OAuth 2.1 authorization-code + PKCE (S256) flow discoverable at `/.well-known/oauth-authorization-server`, `/.well-known/oauth-protected-resource`, and `/.well-known/oauth-protected-resource/mcp`.
 
-> **Current external status:** a sanctioned staging MCP smoke completed the
-> handshake, listed 98 tools, and called the read-only identity tool. The
-> staging metadata predates the release candidate's complete tool annotations
-> and OAuth security schemes. Production OpenAI OAuth installation, refresh,
-> and disconnect still require dogfood after the reviewed backend is deployed.
-> Do not treat this package as a public listing or approved connection.
+> **Current external status:** a development MCP PAT smoke completed
+> `initialize`, listed 98 tools, and called the read-only `whoami` tool on the
+> configured personal development deployment. It did not exercise staging or
+> production OAuth, and no staging deployment is currently recorded. Production
+> OpenAI OAuth installation, refresh, and disconnect still require dogfood after
+> the reviewed backend is deployed.
+> The package is published and passed an isolated Codex marketplace install,
+> but that does not establish a public directory listing or an approved OAuth
+> connection.
 
 ## Advanced: personal access token
 
@@ -68,14 +71,10 @@ Scopes are always **intersected** with the token owner's effective DropHaul perm
 
 ## Claude Code
 
-The current public `promotion-devotion/drophaul-mcp` repository is not the
-final package and is not a supported installation source. Use only a validated
-local distribution until the final release is published.
-
-From the root of that validated local distribution:
+Add the published DropHaul marketplace, then install its plugin:
 
 ```bash
-claude plugin marketplace add ./
+claude plugin marketplace add promotion-devotion/drophaul-mcp
 claude plugin install drophaul@drophaul
 ```
 
@@ -96,7 +95,9 @@ The bundled `.mcp.json`:
 {"mcpServers":{"drophaul":{"type":"http","url":"https://majestic-emu-550.convex.site/mcp"}}}
 ```
 
-The bundled adapter contains no bearer header or credential environment variable. Claude Code completes OAuth for the HTTP server.
+The bundled adapter contains no bearer header or credential environment
+variable. After hosted OAuth dogfood and release-candidate verification passes,
+Claude Code completes OAuth for the HTTP server.
 
 Prefer no plugin?
 
@@ -151,6 +152,17 @@ The server publishes closed OpenAI connector `search` and `fetch` shapes: `searc
 ChatGPT's connector surface changes frequently. If the menu labels differ, follow OpenAI's current [Connect your MCP server to ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt) guide.
 
 ## Codex CLI (client-managed OAuth)
+
+The published repository is a Codex marketplace. An isolated install from
+public `main` verified version 1.0.0 with `ON_INSTALL` authentication:
+
+```bash
+codex plugin marketplace add promotion-devotion/drophaul-mcp
+codex plugin add drophaul@drophaul
+codex plugin list
+```
+
+For a direct MCP-only setup without the packaged skills, use:
 
 ```bash
 codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
