@@ -6,9 +6,10 @@ Always confirm the endpoint is the exact HTTPS URL ending in `/mcp`. DropHaul do
 
 1. Confirm the client supports Streamable HTTP and the current MCP protocol.
 2. Confirm the endpoint is `https://majestic-emu-550.convex.site/mcp` or the exact assigned staging endpoint.
-3. For PAT, confirm the environment variable exists in the process that launches the client and the header expands to `Authorization: Bearer …`.
-4. For OAuth, refetch protected-resource and authorization-server metadata, then confirm the client ID and callback are registered exactly.
-5. Run `whoami` before any other tool.
+3. For a packaged portable, Claude, or Codex install, complete the client-managed OAuth flow. These packages contain no bearer header or token environment variable.
+4. Only for an advanced direct-PAT setup, confirm the environment variable exists in the process that launches the client and the header expands to `Authorization: Bearer …`.
+5. For OAuth, refetch protected-resource and authorization-server metadata. Public self-service registration is not yet available; the client must already be registered with DropHaul.
+6. Run `whoami` before any other tool.
 
 ## Common failures
 
@@ -44,11 +45,11 @@ Retry one read once. For a write, retry only with the original idempotency key. 
 
 ### Claude plugin does not load
 
-Run `claude plugin marketplace update drophaul`, reinstall if needed, then `/reload-plugins`. Confirm `DROPHAUL_MCP_KEY` is set before Claude Code starts. Use `/mcp` to approve the project/plugin server.
+Run `claude plugin marketplace update drophaul`, reinstall if needed, then `/reload-plugins`. Use `/mcp` to complete OAuth for the project/plugin server. A direct PAT configuration is an advanced alternative only.
 
 ### OAuth browser returns to a dead page
 
-For Claude Code, copy the full callback URL from the browser into the CLI prompt when offered. For Claude.ai or ChatGPT, confirm the exact published callback was registered; do not substitute a generic callback URL.
+For Claude Code, copy the full callback URL from the browser into the CLI prompt when offered. For Claude.ai or ChatGPT, restart the client-managed OAuth flow. If the client is not registered, contact support; do not invent a callback, client ID, or secret.
 
 ## Support bundle
 

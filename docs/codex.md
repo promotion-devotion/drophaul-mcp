@@ -6,9 +6,40 @@ DropHaul exposes one Streamable HTTP endpoint:
 https://majestic-emu-550.convex.site/mcp
 ```
 
-Use either a scoped personal access token (PAT) or OAuth. Do not configure both on the same Codex server entry.
+Use the client-managed OAuth setup for normal installs. Do not configure a PAT and OAuth on the same Codex server entry.
 
-## PAT setup
+## Plugin marketplace package
+
+The generated repository includes a repo-scoped marketplace at
+`.agents/plugins/marketplace.json` and an installable package at
+`plugins/drophaul`. After the final generated tree is published, add its public
+repository as a marketplace:
+
+```sh
+codex plugin marketplace add promotion-devotion/drophaul-mcp
+codex plugin marketplace list
+```
+
+Then open **Plugins** in the ChatGPT desktop app, choose the DropHaul
+marketplace, and install DropHaul. For release-candidate testing, add the root
+of an isolated generated distribution instead of the current public repository.
+Do not test by editing a normal user's plugin directories.
+
+## OAuth setup
+
+```sh
+codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
+codex mcp login drophaul
+codex mcp get drophaul --json
+```
+
+The browser flow signs in to DropHaul, requires an explicit company selection, and shows the requested scopes. Codex stores and refreshes OAuth credentials separately from the repository. Use `codex mcp logout drophaul` to clear them.
+
+The live flow works only for a Codex OAuth client already registered with
+DropHaul; adding the server does not register a new client. If login reports an
+unknown client, contact [support](mailto:support@drophaul.app).
+
+## Advanced PAT setup
 
 Create an **operator** token in DropHaul at **Settings → API Tokens**. Choose only the scopes needed for the task, copy the secret once, and store it in your shell or secret manager:
 
@@ -30,22 +61,6 @@ bearer_token_env_var = "DROPHAUL_MCP_KEY"
 
 Start a new Codex session after setting the environment variable. Never put the token value in TOML, a prompt, shell history, a repository file, or a screenshot.
 
-## OAuth setup
-
-OAuth uses a public client registered by the DropHaul operator. Public pre-login client registration remains disabled until its external security authorization is complete, so obtain the client ID through the support channel before this flow:
-
-```sh
-export DROPHAUL_OAUTH_CLIENT_ID='<registered public client id>'
-codex mcp add drophaul-oauth \
-  --url https://majestic-emu-550.convex.site/mcp \
-  --oauth-client-id "$DROPHAUL_OAUTH_CLIENT_ID" \
-  --oauth-resource https://majestic-emu-550.convex.site/mcp
-codex mcp login drophaul-oauth
-codex mcp get drophaul-oauth --json
-```
-
-The browser flow signs in to DropHaul, requires an explicit company selection, and shows the requested scopes. Codex stores and refreshes OAuth credentials separately from the repository. Use `codex mcp logout drophaul-oauth` to clear them.
-
 ## Verify a clean session
 
 1. Run `whoami`; verify the user, company, and roles before reading business data.
@@ -59,7 +74,6 @@ Use the [agent-testing lanes](agent-testing.md) for coding-agent work. Read [sec
 
 ```sh
 codex mcp remove drophaul
-codex mcp remove drophaul-oauth
 ```
 
 Removing a configuration does not revoke a PAT. Revoke it in DropHaul too.

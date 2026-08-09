@@ -3,10 +3,10 @@
 Start at [installation.md](installation.md) — it covers every supported client on one page. The
 per-client pages go deeper:
 
-- [claude-code.md](claude-code.md) — Claude Code plugin, direct PAT, direct OAuth
+- [claude-code.md](claude-code.md) — Claude Code plugin, OAuth, advanced direct PAT
 - [claude-ai.md](claude-ai.md) — Claude.ai, Claude Desktop, and Cowork custom connector
 - [chatgpt.md](chatgpt.md) — ChatGPT developer-mode connector
-- [codex.md](codex.md) — Codex CLI
+- [codex.md](codex.md) — Codex CLI OAuth and advanced PAT
 
 Read before granting write access:
 
@@ -25,9 +25,5 @@ Directory and compliance disclosures live in [directory/](directory/): [privacy]
 [security](directory/security.md), [support](directory/support.md), and
 [disconnect](directory/disconnect.md).
 
-## A note on source-file references
-
-Several pages cite implementation files by path — `packages/shared/src/schemas/mcp.ts`,
-`packages/backend/convex/mcp/oauthMetadata.ts`, and similar. Those paths refer to the private DropHaul
-monorepo where the server is implemented, not to this repository. They are provenance for the claim
-being made, not files you can open here.
+The distribution contains public setup and safety material only. Private service source, internal tests,
+and repository-specific build paths are intentionally excluded.

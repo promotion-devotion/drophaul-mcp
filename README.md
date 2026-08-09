@@ -6,36 +6,41 @@ The official [Model Context Protocol](https://modelcontextprotocol.io) integrati
 This repository is the distribution package. It contains no server code — the MCP server is a hosted
 HTTPS endpoint operated by DropHaul. What ships here is:
 
+- a **portable Agent Plugins 1.0 manifest** (`plugin.json`, `mcp.json`) using the
+  literal hosted HTTPS endpoint and client-managed OAuth;
 - a **Claude Code plugin** (`.claude-plugin/`, `.mcp.json`) that wires the remote server up and adds four
   workflow skills;
-- the same four **skills** as plain Markdown, usable by any agent runtime;
+- a **Codex plugin** (`.codex-plugin/plugin.json`) that loads the packaged
+  `.mcp.json`, plus a repository marketplace under `.agents/plugins/`;
+- the same four **skills** as plain Markdown for compatible agent runtimes;
 - **end-user documentation** for all four supported clients, in [`docs/`](docs/).
 
 ---
 
-## Status: the default endpoint is not serving yet
+## Status: release candidate prepared; external publication pending
 
-The bundled configuration points at `https://majestic-emu-550.convex.site/mcp`. As of **2026-08-03**
-that URL returns **HTTP 404** to an MCP `initialize` request, as does
-`/.well-known/oauth-protected-resource`. The server has not been deployed.
+The bundled configuration points at
+`https://majestic-emu-550.convex.site/mcp`. A sanctioned staging smoke completed
+the MCP handshake, listed all 98 tools, and called the read-only identity tool.
+That staging metadata snapshot predates the release candidate's complete tool
+annotations and OAuth security schemes. The backend must be deployed and
+rescanned, and the OpenAI OAuth installation must be dogfooded, before public
+onboarding. This local package is not evidence of repository publication,
+vendor submission, approval, or directory availability.
 
-Installing the plugin today will succeed — Claude Code registers the server config without contacting
-it — but every tool call will fail until DropHaul deploys the endpoint, or until you point the client at
-a deployment that is serving:
-
-```bash
-export DROPHAUL_MCP_URL="https://<your-deployment>.convex.site/mcp"
-```
-
-Nothing in this repository can confirm a working endpoint. Verify with your DropHaul operator before
-relying on it. Everything below describes configuration, not a live connection.
+Installing a package does not establish a vendor listing or grant data access. OAuth sign-in is required
+for the hosted endpoint, but no OpenAI installation is currently verified to complete the release
+candidate flow. Only clients already registered with DropHaul may be eligible until OAuth dogfood passes.
+Installing or adding a server does not register a new OAuth client. For a separate
+deployment, configure that client with that deployment's literal HTTPS `/mcp` endpoint. Verify any
+nonproduction endpoint with your DropHaul operator before relying on it.
 
 ---
 
-## Get a token
+## Advanced direct PAT setup
 
-Claude Code and the Codex CLI authenticate with a DropHaul personal access token. Claude.ai and ChatGPT
-use OAuth instead and need no token.
+Packaged portable, Claude, and Codex adapters use client-managed OAuth and contain no token. A personal
+access token is only for an operator who deliberately configures a direct local CLI connection.
 
 1. Sign in at [app.drophaul.app](https://app.drophaul.app) as an **owner** or **admin**. No other role
    can mint or revoke tokens.
@@ -68,26 +73,22 @@ Full per-scope descriptions are in [`docs/installation.md`](docs/installation.md
 
 ### 1. Claude Code
 
+The public-repository install command will be published only with the final
+allowlisted release and its fresh GitHub installation evidence. Do not install
+the current repository snapshot.
+
+After the release backend and OAuth client are verified, the installed adapter uses
+the literal hosted URL `https://majestic-emu-550.convex.site/mcp`, and Claude Code completes OAuth; it
+does not read a token environment variable or send a bundled Authorization header.
+
+Until the final release is published, install only from a validated local distribution, not the current public repository:
+
 ```bash
-export DROPHAUL_MCP_KEY="dh_pat_…"
-claude plugin marketplace add promotion-devotion/drophaul-mcp
+claude plugin marketplace add ./
 claude plugin install drophaul@drophaul
 ```
 
-Then run `/mcp` inside Claude Code, approve the `drophaul` server, and call `whoami`.
-
-`DROPHAUL_MCP_KEY` must exist in the environment Claude Code inherits. If it is unset the plugin still
-loads, but `claude mcp list` reports a missing-variable warning and every call fails authentication.
-
-To install from a local clone instead:
-
-```bash
-git clone https://github.com/promotion-devotion/drophaul-mcp
-claude plugin marketplace add ./drophaul-mcp
-claude plugin install drophaul@drophaul
-```
-
-Prefer no plugin at all? Add the server directly:
+For an advanced direct-PAT setup without the plugin, add the server directly:
 
 ```bash
 claude mcp add --transport http --scope local \
@@ -100,10 +101,11 @@ More detail: [`docs/claude-code.md`](docs/claude-code.md).
 ### 2. Claude.ai, Claude Desktop, and Cowork
 
 Claude connects from Anthropic's cloud, not from your machine, so the endpoint must be reachable on the
-public internet. No firewall allowlisting is needed; no token is needed.
+public internet. The connector uses OAuth and does not require a personal access token.
 
-**Pro / Max** — **Customize → Connectors** → **+** → **Add custom connector**, enter
+**Free / Pro / Max** — **Customize → Connectors** → **+** → **Add custom connector**, enter
 `https://majestic-emu-550.convex.site/mcp`, click **Add**, then **Connect** and sign in to DropHaul.
+Free accounts support one custom connector.
 
 **Team / Enterprise** — an Owner or Primary Owner adds it once under **Organization settings →
 Connectors** (**Add** → hover **Custom** → **Web**); each member then connects it from **Customize →
@@ -111,19 +113,28 @@ Connectors**.
 
 Enable it per conversation from the **+** button → **Connectors**.
 
-DropHaul's authorization server does **not** advertise dynamic client registration. If Claude reports an
-unknown client, contact [support@drophaul.app](mailto:support@drophaul.app) for a client ID — do not
-invent one or paste an unrelated secret.
+DropHaul does not currently offer public self-service OAuth client registration. If Claude reports an
+unknown client, contact [support@drophaul.app](mailto:support@drophaul.app);
+do not invent a client configuration or paste unrelated credentials.
 
 More detail: [`docs/claude-ai.md`](docs/claude-ai.md).
 
 ### 3. Codex CLI
 
+The final generated repository is also a Codex marketplace. After it is
+published, add it and install DropHaul from **Plugins** in the ChatGPT desktop
+app:
+
 ```bash
-export DROPHAUL_MCP_KEY="dh_pat_…"
-codex mcp add drophaul \
-  --url https://majestic-emu-550.convex.site/mcp \
-  --bearer-token-env-var DROPHAUL_MCP_KEY
+codex plugin marketplace add promotion-devotion/drophaul-mcp
+codex plugin marketplace list
+```
+
+For a direct MCP-only setup without the bundled skills, use:
+
+```bash
+codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
+codex mcp login drophaul
 codex mcp get drophaul --json
 ```
 
@@ -132,14 +143,15 @@ Or write `~/.codex/config.toml` directly:
 ```toml
 [mcp_servers.drophaul]
 url = "https://majestic-emu-550.convex.site/mcp"
-bearer_token_env_var = "DROPHAUL_MCP_KEY"
 startup_timeout_sec = 20
 tool_timeout_sec = 120
 default_tools_approval_mode = "writes"
 ```
 
 `default_tools_approval_mode = "writes"` makes Codex prompt for any tool not marked read-only —
-recommended for a dispatch system. Never put the token value itself in TOML.
+recommended for a dispatch system. After the registered Codex OAuth client passes release-candidate
+dogfood, Codex completes OAuth outside the repository. Use the advanced direct-PAT section above only
+for a deliberate local bearer setup, and never put a token value in TOML.
 
 More detail: [`docs/codex.md`](docs/codex.md).
 
@@ -150,14 +162,19 @@ More detail: [`docs/codex.md`](docs/codex.md).
 3. Give it a name and description.
 4. Under **Connection**, enter the full URL including the `/mcp` path:
    `https://majestic-emu-550.convex.site/mcp`
-5. Choose OAuth and complete the DropHaul sign-in.
+5. After the release backend is deployed and the approved OpenAI OAuth client passes dogfood, create the connection
+   and complete the DropHaul OAuth sign-in.
+6. Review the tools and metadata discovered from the server.
 
-The server publishes OpenAI's exact connector `search` and `fetch` shapes, so read-only tools are usable
-as a company-knowledge source; full operational tools require the developer-mode connection.
+After release-candidate OAuth dogfood succeeds, the server's OpenAI
+connector `search` and `fetch` shapes allow read-only tools to support company-knowledge workflows;
+full operational tools require the developer-mode connection.
 
 ChatGPT's connector surface changes often. If the labels differ, follow OpenAI's current
 [Connect your MCP server to ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt)
 guide.
+
+**Scan Tools** belongs to the separate public plugin submission portal, not this developer connection.
 
 More detail: [`docs/chatgpt.md`](docs/chatgpt.md).
 
@@ -212,10 +229,10 @@ values, refresh tokens, customer content, or full tool arguments.
 | Page | Covers |
 | --- | --- |
 | [`docs/installation.md`](docs/installation.md) | All four clients in one page, plus the full scope table |
-| [`docs/claude-code.md`](docs/claude-code.md) | Plugin install, direct PAT setup, direct OAuth setup |
+| [`docs/claude-code.md`](docs/claude-code.md) | Plugin install, OAuth, and advanced direct PAT setup |
 | [`docs/claude-ai.md`](docs/claude-ai.md) | Custom connector for Claude.ai, Desktop, and Cowork |
 | [`docs/chatgpt.md`](docs/chatgpt.md) | Developer-mode connector and test walkthrough |
-| [`docs/codex.md`](docs/codex.md) | Codex CLI PAT and OAuth setup |
+| [`docs/codex.md`](docs/codex.md) | Codex CLI OAuth and advanced PAT setup |
 | [`docs/security.md`](docs/security.md) | Scopes, credentials, approvals, prompt injection, incidents |
 | [`docs/security-boundaries.md`](docs/security-boundaries.md) | What MCP deliberately cannot reach |
 | [`docs/troubleshooting.md`](docs/troubleshooting.md) | Status codes and connection failures |
@@ -231,6 +248,9 @@ values, refresh tokens, customer content, or full tool arguments.
   marketplace.json    single-plugin marketplace, source "./"
   plugin.json         plugin manifest
 .mcp.json             remote HTTP server definition
+.agents/plugins/
+  marketplace.json    repository-scoped Codex marketplace
+plugins/drophaul/      installable Codex package
 skills/
   plan-my-day/        SKILL.md + agents/openai.yaml
   optimize-routes/
@@ -239,8 +259,9 @@ skills/
 docs/                 end-user documentation
 ```
 
-This tree is generated from the DropHaul monorepo by `scripts/build-mcp-distribution.ts`. Send changes
-to the monorepo sources, not to a copy here.
+This public tree intentionally contains only the portable manifests, client adapters, prompt-only
+skills, license, and end-user documentation. Private service source and internal build paths are not
+part of the distribution.
 
 ---
 

@@ -1,6 +1,7 @@
 # DropHaul MCP support
 
-Email [support@drophaul.app](mailto:support@drophaul.app). Include the host name
+Open the public [DropHaul support page](https://www.drophaul.app/contact) or
+email [support@drophaul.app](mailto:support@drophaul.app). Include the host name
 and version, UTC time, company display name, tool name, expected outcome, and a
 redacted request ID. Never send bearer or refresh tokens, customer payloads, or
 conversation transcripts by email.

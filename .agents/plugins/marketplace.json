@@ -1,0 +1,20 @@
+{
+	"name": "drophaul",
+	"interface": {
+		"displayName": "DropHaul"
+	},
+	"plugins": [
+		{
+			"name": "drophaul",
+			"source": {
+				"source": "local",
+				"path": "./plugins/drophaul"
+			},
+			"policy": {
+				"installation": "AVAILABLE",
+				"authentication": "ON_INSTALL"
+			},
+			"category": "Business & Operations"
+		}
+	]
+}

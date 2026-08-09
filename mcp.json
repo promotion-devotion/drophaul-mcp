@@ -1,0 +1,9 @@
+{
+	"$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+	"mcpServers": {
+		"drophaul": {
+			"type": "streamable-http",
+			"url": "https://majestic-emu-550.convex.site/mcp"
+		}
+	}
+}
