@@ -101,7 +101,7 @@ Enable it per conversation from the **+** button → **Connectors**.
 
 DropHaul supports Client ID Metadata Documents (CIMD) for public OAuth clients;
 it does not advertise a dynamic client registration endpoint. If Claude cannot
-register or connect, use the
+connect, use the
 [troubleshooting guide](troubleshooting.md) and contact
 [support](mailto:support@drophaul.app); do not invent client credentials or
 paste unrelated tokens.

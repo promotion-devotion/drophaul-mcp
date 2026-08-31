@@ -35,13 +35,6 @@ trust boundary therefore depends on this MCP host continuing to receive traffic
 through Cloudflare; it is not a general assertion about arbitrary direct-origin
 requests.
 
-**Historical host evidence (2026-08-08, before the strict 2026 transport
-upgrade).** Production protected-resource metadata returned HTTP 200, and an
-unauthenticated legacy initialize request returned a 401 Bearer challenge with
-`resource_metadata`. That historical observation is not evidence for the
-current transport. Current release acceptance uses `server/discover` and
-strictly rejects initialize/session traffic.
-
 ## Writes and approvals
 
 Read the tool name, selected company, public display IDs, changed fields, and side effects before approval. Do not use **Allow always** for destructive or externally visible tools.

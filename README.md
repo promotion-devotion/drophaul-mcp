@@ -91,9 +91,11 @@ Connectors**.
 
 Enable it per conversation from the **+** button → **Connectors**.
 
-DropHaul does not currently offer public self-service OAuth client registration. If Claude reports an
-unknown client, contact [support@drophaul.app](mailto:support@drophaul.app);
-do not invent a client configuration or paste unrelated credentials.
+DropHaul publishes Client ID Metadata Documents (CIMD) for public OAuth clients.
+Complete the client-managed OAuth flow; no separate client registration step is
+required. If Claude reports an unknown or unsupported client, contact
+[support@drophaul.app](mailto:support@drophaul.app) rather than inventing a
+client configuration or pasting unrelated credentials.
 
 More detail: [`docs/claude-ai.md`](docs/claude-ai.md).
 
