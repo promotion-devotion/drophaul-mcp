@@ -1,7 +1,7 @@
 {
 	"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
 	"name": "drophaul",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "DropHaul MCP operational workflows for dispatch, routes, and invoicing.",
 	"author": {
 		"name": "DropHaul",

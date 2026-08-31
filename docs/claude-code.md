@@ -1,7 +1,18 @@
 # Use DropHaul from Claude Code
 
 Claude Code can install the DropHaul plugin or connect directly. Use Claude
-Code 2.1.64 or later for current OAuth metadata behavior.
+Code 2.1.232 or later, whose v2 MCP runtime can negotiate DropHaul's strict
+`2026-07-28` wire contract. Before installing, verify the runtime explicitly:
+
+```sh
+claude --version
+export MCP_SDK_GENERATION=v2
+export MCP_PROTOCOL_NEGOTIATION=auto
+```
+
+The environment overrides matter in cloud-hosted environments, app-gateway
+sessions, or installations where feature-flag fetching is disabled; those
+cases may otherwise retain the legacy runtime even on a current version.
 
 ## Install the published package
 
@@ -27,13 +38,8 @@ interpolation. The package uses client-managed OAuth for the HTTP server; use
 the separate direct-PAT setup below only when an operator deliberately chooses
 a local bearer credential.
 
-## Publication and install evidence
-
-The final allowlisted package is published on public `main`. An isolated Codex
-marketplace add and `drophaul@drophaul` install from that Git source passed at
-version 1.0.0 with `ON_INSTALL` authentication. A fresh Claude Code install and
-hosted OAuth smoke remain separate pending checks. Package publication is not
-evidence of a Claude or OpenAI directory listing.
+This Git-backed marketplace is the standard technical installation path for
+Claude Code.
 
 ## Advanced direct PAT setup
 
@@ -47,6 +53,10 @@ claude mcp add \
 claude mcp get drophaul
 ```
 
+Create the operator token at
+[DropHaul API Tokens](https://drophaul.app/settings/api-tokens). The value is
+shown once.
+
 Use the plugin for team workflows; use local scope for a personal credential. Never commit a header containing the expanded token.
 
 ## Direct OAuth setup
@@ -56,7 +66,9 @@ claude mcp add --transport http --scope local drophaul-oauth \
   https://majestic-emu-550.convex.site/mcp
 ```
 
-Run `/mcp`, choose `drophaul-oauth`, and follow **Authenticate**. Until public client registration is authorized, this works only with a client already registered by the operator.
+Run `/mcp`, choose `drophaul-oauth`, and follow **Authenticate**. If the client
+is not recognized, contact [DropHaul support](mailto:support@drophaul.app); do
+not invent client credentials.
 
 Use **Clear authentication** in `/mcp` to remove local OAuth credentials. Revoke DropHaul consent as well when access should end.
 

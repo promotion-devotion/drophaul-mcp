@@ -12,7 +12,17 @@ Use the client-managed OAuth setup for normal installs. Do not configure a PAT a
 
 The generated repository includes a repo-scoped marketplace at
 `.agents/plugins/marketplace.json` and an installable package at
-`plugins/drophaul`. The final generated tree is published on public `main`.
+`plugins/drophaul`.
+DropHaul uses the strict `2026-07-28` MCP wire contract. On Codex 0.148.0 the
+matching runtime is still an under-development feature and is disabled by
+default, so enable it and verify that its effective state is `true` before
+installing or connecting:
+
+```sh
+codex features enable mcp_2026_07_28
+codex features list
+```
+
 Add its repository as a marketplace, install DropHaul, and inspect the result:
 
 ```sh
@@ -20,11 +30,6 @@ codex plugin marketplace add promotion-devotion/drophaul-mcp
 codex plugin add drophaul@drophaul
 codex plugin list
 ```
-
-An isolated `CODEX_HOME` verified this exact public install at version 1.0.0
-with `ON_INSTALL` authentication, then removed its temporary state. This proves
-package discovery and installation, not hosted OAuth or public directory
-approval. Do not test by editing a normal user's plugin directories.
 
 ## OAuth setup
 
@@ -36,13 +41,14 @@ codex mcp get drophaul --json
 
 The browser flow signs in to DropHaul, requires an explicit company selection, and shows the requested scopes. Codex stores and refreshes OAuth credentials separately from the repository. Use `codex mcp logout drophaul` to clear them.
 
-The live flow works only for a Codex OAuth client already registered with
-DropHaul; adding the server does not register a new client. If login reports an
-unknown client, contact [support](mailto:support@drophaul.app).
+DropHaul publishes Client ID Metadata Documents (CIMD) for public OAuth clients.
+Complete the client-managed OAuth flow; no separate client registration step is
+required. If login reports an unknown or unsupported client, verify that Codex
+supports CIMD and contact [support](mailto:support@drophaul.app).
 
 ## Advanced PAT setup
 
-Create an **operator** token in DropHaul at **Settings → API Tokens**. Choose only the scopes needed for the task, copy the secret once, and store it in your shell or secret manager:
+Create an **operator** token at [DropHaul API Tokens](https://drophaul.app/settings/api-tokens). Choose only the scopes needed for the task, copy the secret once, and store it in your shell or secret manager:
 
 ```sh
 export DROPHAUL_MCP_KEY='<paste the one-time token here>'
