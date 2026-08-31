@@ -74,3 +74,47 @@ It is deliberately **not** wired into the CI `test` job. It reaches a live stagi
 ## Evidence checklist
 
 Record the deployment alias, client and version, credential kind, company fixture, scopes, tool names, public display IDs, request IDs, and pass/fail result. Redact all bearer values, authorization codes, refresh tokens, signed consent queries, customer contact data, and internal database IDs.
+
+## Reproducible hosted-client acceptance
+
+The release gate is modern-first. Before a Claude, ChatGPT, or Codex
+walkthrough, exercise the stateless `2026-07-28` flow — `server/discover` →
+`tools/list` → authenticated `tools/call` — with the secret-safe harness. It
+also asserts every required modern wire family: `resultType`, server identity,
+the intended cache hints, unsupported-version errors, unknown-method HTTP 404,
+removed initialize, and session-method HTTP 405 responses. Pass the credential by file so it never
+appears in shell history or process arguments:
+
+```sh
+MCP_ACCEPTANCE_ENDPOINT=https://staging.example.test/mcp \
+MCP_ACCEPTANCE_TOKEN_FILE=/secure/path/agent-token.txt \
+MCP_ACCEPTANCE_PERFORMANCE_SAMPLES=10 \
+bun run smoke:mcp-release
+```
+
+The harness gates `server/discover`, `tools/list`, `whoami`, `list_jobs`, and
+`search` independently; it never averages an unrelated operation into an SLO.
+The first request is reported separately without claiming process or network
+isolation, and the remaining nine or more samples form the subsequent-request
+distribution. Staging defaults are subsequent-request p50 1.5 seconds, p95 2.5
+seconds, maximum 4 seconds, and first-sample p95 4 seconds. Override them with
+`MCP_ACCEPTANCE_WARM_P50_MS`, `MCP_ACCEPTANCE_WARM_P95_MS`,
+`MCP_ACCEPTANCE_WARM_MAX_MS`, and `MCP_ACCEPTANCE_FIRST_SAMPLE_P95_MS`. A timeout,
+network error, 5xx, or other non-success response fails the operation gate.
+
+The public endpoint is deliberately modern-only. A `2025-11-25` initialize
+request and a modern-enveloped `initialize` request must both fail; GET/DELETE
+session operations must return 405. The release report contains only protocol
+version, credential kind, pass/fail checks, and per-operation first/subsequent latency.
+It never serializes bearer material, response payloads, request IDs, public
+record IDs, or tenant identifiers. These automate
+transport readiness; they do not replace the deployed OAuth
+login/consent/refresh/revoke gate.
+
+Modern cache policy is intentional rather than the SDK's conservative default:
+
+- `server/discover`, `resources/list`, and the static widget
+  `resources/read` results are public for five minutes.
+- Credential-filtered `tools/list` results are private for one minute.
+- Tasks, subscriptions, and change-notification capabilities remain
+  unadvertised until DropHaul supports them end to end.

@@ -11,8 +11,8 @@ responsibility, and what neither side can close.
 
 ## What DropHaul supplies
 
-**Server instructions.** The server's modern discovery response and supported
-stateless `initialize` handshake carry the same `instructions` string. It says
+**Server instructions.** The server's modern `server/discover` response carries
+the `instructions` string. There is no initialization handshake. It says
 four things:
 
 - what this server is, and that it acts as one signed-in user in one company;

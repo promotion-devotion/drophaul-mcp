@@ -1,7 +1,18 @@
 # Use DropHaul from Claude Code
 
 Claude Code can install the DropHaul plugin or connect directly. Use Claude
-Code 2.1.64 or later for current OAuth metadata behavior.
+Code 2.1.232 or later, whose v2 MCP runtime can negotiate DropHaul's strict
+`2026-07-28` wire contract. Before installing, verify the runtime explicitly:
+
+```sh
+claude --version
+export MCP_SDK_GENERATION=v2
+export MCP_PROTOCOL_NEGOTIATION=auto
+```
+
+The environment overrides matter in cloud-hosted environments, app-gateway
+sessions, or installations where feature-flag fetching is disabled; those
+cases may otherwise retain the legacy runtime even on a current version.
 
 ## Install the published package
 
@@ -27,13 +38,21 @@ interpolation. The package uses client-managed OAuth for the HTTP server; use
 the separate direct-PAT setup below only when an operator deliberately chooses
 a local bearer credential.
 
+This Git-backed marketplace is the standard technical installation path. It is
+separate from Anthropic's Connectors Directory; once a verified DropHaul
+directory listing is published, that listing becomes the default for hosted
+Claude users.
+
 ## Publication and install evidence
 
-The final allowlisted package is published on public `main`. An isolated Codex
-marketplace add and `drophaul@drophaul` install from that Git source passed at
-version 1.0.0 with `ON_INSTALL` authentication. A fresh Claude Code install and
-hosted OAuth smoke remain separate pending checks. Package publication is not
-evidence of a Claude or OpenAI directory listing.
+The prior 1.0.0 allowlisted package is published on public `main`. Claude Code
+2.1.223 historically clean-installed that package from an isolated
+configuration, proving package discovery only; the check predates the v2
+runtime default and did not exercise the server. Claude Code 2.1.247 then
+clean-installed the local generated 1.1.0 candidate from a separate isolated
+configuration and listed it as enabled, again without connecting to the
+server. Public-source 1.1.0 installation and hosted OAuth remain pending.
+Package publication is not evidence of a Claude or OpenAI directory listing.
 
 ## Advanced direct PAT setup
 
@@ -46,6 +65,10 @@ claude mcp add \
   drophaul https://majestic-emu-550.convex.site/mcp
 claude mcp get drophaul
 ```
+
+Create the operator token at
+[DropHaul API Tokens](https://drophaul.app/settings/api-tokens). The value is
+shown once.
 
 Use the plugin for team workflows; use local scope for a personal credential. Never commit a header containing the expanded token.
 

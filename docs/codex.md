@@ -8,11 +8,25 @@ https://majestic-emu-550.convex.site/mcp
 
 Use the client-managed OAuth setup for normal installs. Do not configure a PAT and OAuth on the same Codex server entry.
 
+Once the verified DropHaul Plugins Directory listing is published, install it
+from **Plugins** in ChatGPT/Codex. No exact listing URL is recorded today, so
+the Git-backed package and literal endpoint below remain the technical paths.
+
 ## Plugin marketplace package
 
 The generated repository includes a repo-scoped marketplace at
 `.agents/plugins/marketplace.json` and an installable package at
-`plugins/drophaul`. The final generated tree is published on public `main`.
+`plugins/drophaul`. The prior 1.0.0 generated tree is published on public `main`.
+DropHaul uses the strict `2026-07-28` MCP wire contract. On Codex 0.148.0 the
+matching runtime is still an under-development feature and is disabled by
+default, so enable it and verify that its effective state is `true` before
+installing or connecting:
+
+```sh
+codex features enable mcp_2026_07_28
+codex features list
+```
+
 Add its repository as a marketplace, install DropHaul, and inspect the result:
 
 ```sh
@@ -25,6 +39,9 @@ An isolated `CODEX_HOME` verified this exact public install at version 1.0.0
 with `ON_INSTALL` authentication, then removed its temporary state. This proves
 package discovery and installation, not hosted OAuth or public directory
 approval. Do not test by editing a normal user's plugin directories.
+
+Version 1.1.0 is the proposed candidate. Do not treat the prior public 1.0.0
+install as evidence that 1.1.0 is merged, published, or clean-installed.
 
 ## OAuth setup
 
@@ -42,7 +59,7 @@ unknown client, contact [support](mailto:support@drophaul.app).
 
 ## Advanced PAT setup
 
-Create an **operator** token in DropHaul at **Settings → API Tokens**. Choose only the scopes needed for the task, copy the secret once, and store it in your shell or secret manager:
+Create an **operator** token at [DropHaul API Tokens](https://drophaul.app/settings/api-tokens). Choose only the scopes needed for the task, copy the secret once, and store it in your shell or secret manager:
 
 ```sh
 export DROPHAUL_MCP_KEY='<paste the one-time token here>'

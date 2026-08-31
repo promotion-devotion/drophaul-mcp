@@ -1,0 +1,17 @@
+{
+	"$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+	"name": "io.github.promotion-devotion/drophaul",
+	"title": "DropHaul",
+	"description": "Dispatch, route, fleet, customer, and finance workflows for portable sanitation operators.",
+	"version": "1.1.0",
+	"repository": {
+		"url": "https://github.com/promotion-devotion/drophaul-mcp",
+		"source": "github"
+	},
+	"remotes": [
+		{
+			"type": "streamable-http",
+			"url": "https://majestic-emu-550.convex.site/mcp"
+		}
+	]
+}

@@ -1,10 +1,10 @@
 # DropHaul plugin release notes
 
-## 1.0.0 — proposed initial directory release
+## 1.1.0 — proposed directory-readiness release
 
 - Adds the hosted DropHaul MCP connection with OAuth 2.1 and per-tool scope
   declarations.
-- Exposes 98 role-filtered tools for dispatch, route, fleet, customer, and
+- Exposes 99 role-filtered tools for dispatch, route, fleet, customer, and
   invoice workflows with complete safety annotations.
 - Adds read-only schedule and route MCP App cards.
 - Bundles four prompt-only workflows: `plan-my-day`, `optimize-routes`,
@@ -12,5 +12,6 @@
 - Adds a repository-scoped Codex marketplace package, portable Agent Plugins
   manifests, Claude Code metadata, and client setup documentation.
 
-This is release copy for a proposed first submission. It does not claim that
-version 1.0.0 has been submitted, approved, or published.
+This is release copy for the proposed 1.1.0 submission candidate. The previous
+1.0.0 package is public; this copy does not claim that 1.1.0 has been merged,
+submitted, approved, or published.

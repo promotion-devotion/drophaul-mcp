@@ -17,19 +17,25 @@ HTTPS endpoint operated by DropHaul. What ships here is:
 
 ---
 
-## Status: public package published; external service approval pending
+## Status: 1.1.0 candidate; external service approval pending
 
 The bundled configuration points at
 `https://majestic-emu-550.convex.site/mcp`. A development MCP PAT smoke completed
-`initialize`, listed all 98 tools, and called the read-only `whoami` tool on the
+`server/discover`, listed 98 credential-authorized tools, and called the read-only `whoami` tool on the
 configured personal development deployment. It did not exercise staging or
-production OAuth, and no staging deployment is currently recorded. The backend
+production OAuth, and no staging deployment is currently recorded. The local
+1.1.0 catalog now contains 99 tools, but that count has not been relabeled as a
+new authenticated smoke. The backend
 must be deployed and rescanned, and the OpenAI OAuth installation must be
-dogfooded, before public onboarding. The allowlisted package is published at
+dogfooded, before public onboarding. The prior 1.0.0 allowlisted package is published at
 [`promotion-devotion/drophaul-mcp`](https://github.com/promotion-devotion/drophaul-mcp),
 and an isolated Codex marketplace install from public `main` passed. Repository
 publication and package installation are not evidence of vendor submission,
 approval, or directory availability.
+
+This tree is the proposed 1.1.0 candidate. Until its pull request is merged,
+the prior public 1.0.0 clean-install evidence must not be relabeled as a public
+1.1.0 install.
 
 Installing a package does not establish a vendor listing or grant data access. OAuth sign-in is required
 for the hosted endpoint, but no client is currently verified to complete the live flow for the OpenAI
@@ -38,43 +44,38 @@ Installing or adding a server does not register a new OAuth client. For a separa
 deployment, configure that client with that deployment's literal HTTPS `/mcp` endpoint. Verify any
 nonproduction endpoint with your DropHaul operator before relying on it.
 
----
+## Start here
 
-## Advanced direct PAT setup
+The intended default is one-click installation from the verified DropHaul
+listing shared by ChatGPT and Codex, or from the verified DropHaul listing in
+Claude's Connectors Directory. Neither listing has an exact public URL yet. Do
+not trust an unofficial **Add** link.
 
-Packaged portable, Claude, and Codex adapters use client-managed OAuth and contain no token. A personal
-access token is only for an operator who deliberately configures a direct local CLI connection.
+Until publication, add this literal Streamable HTTP endpoint as a custom
+connection and complete client-managed OAuth:
 
-1. Sign in at [app.drophaul.app](https://app.drophaul.app) as an **owner** or **admin**. No other role
-   can mint or revoke tokens.
-2. Open **Settings → API Tokens**.
-3. Choose kind **`operator`** (a human's own client; default 90 days, maximum 365). The `agent` kind is
-   for automated testing against non-production deployments only — see
-   [`docs/agent-testing.md`](docs/agent-testing.md).
-4. Select the smallest set of scopes that covers your workflow. **All four bundled skills work with
-   read-only scopes.**
-5. Create it and copy the value. It starts with `dh_pat_` and is shown **once** — DropHaul stores only a
-   SHA-256 hash plus the last four characters.
-
-```bash
-export DROPHAUL_MCP_KEY="dh_pat_…"
+```text
+https://majestic-emu-550.convex.site/mcp
 ```
 
-Scopes are always **intersected** with the token owner's live DropHaul permissions at request time. A
-scope can narrow what a token may do; it can never widen it. Revoking the user's role or org membership
-invalidates the token on its next request.
-
-| Read scopes | Write scopes |
-| --- | --- |
-| `jobs:read`, `routes:read`, `customers:read`, `units:read`, `sites:read`, `invoices:read`, `quotes:read`, `org:read`, `self:read`, `supplies:read` | `jobs:write`, `jobs:dispatch`, `routes:write`, `routes:optimize`, `customers:write`, `units:write`, `sites:write`, `invoices:write`, `quotes:write`, `self:write`, `supplies:write` |
-
-Full per-scope descriptions are in [`docs/installation.md`](docs/installation.md).
-
----
+The Git-backed Claude Code/Codex package below is the standard technical path.
+Neither normal path requires a PAT. The PAT section is only for an operator who
+deliberately needs a direct bearer connection.
 
 ## Install
 
 ### 1. Claude Code
+
+Use Claude Code 2.1.232 or later and pin its v2 MCP runtime before installing:
+
+```bash
+claude --version
+export MCP_SDK_GENERATION=v2
+export MCP_PROTOCOL_NEGOTIATION=auto
+```
+
+The overrides prevent cloud-hosted, app-gateway, and disabled feature-fetch
+environments from falling back to the legacy runtime.
 
 Add the published DropHaul marketplace, then install its plugin:
 
@@ -84,9 +85,10 @@ claude plugin install drophaul@drophaul
 ```
 
 The installed adapter uses the literal hosted URL
-`https://majestic-emu-550.convex.site/mcp`. After hosted OAuth dogfood and
-release-candidate verification passes, Claude Code completes OAuth; it does not
+`https://majestic-emu-550.convex.site/mcp` and client-managed OAuth; it does not
 read a token environment variable or send a bundled Authorization header.
+Fresh Claude Code OAuth acceptance is still a release gate and has not been
+recorded.
 
 For an advanced direct-PAT setup without the plugin, add the server directly:
 
@@ -117,6 +119,10 @@ DropHaul does not currently offer public self-service OAuth client registration.
 unknown client, contact [support@drophaul.app](mailto:support@drophaul.app);
 do not invent a client configuration or paste unrelated credentials.
 
+This custom connection is the current fallback. After Anthropic publishes the
+verified DropHaul Connectors Directory listing, install from that exact listing
+instead.
+
 More detail: [`docs/claude-ai.md`](docs/claude-ai.md).
 
 ### 3. Codex CLI
@@ -126,6 +132,8 @@ DropHaul from **Plugins** in the ChatGPT desktop app. A clean isolated install
 from public `main` verified version 1.0.0 with `ON_INSTALL` authentication:
 
 ```bash
+codex features enable mcp_2026_07_28
+codex features list
 codex plugin marketplace add promotion-devotion/drophaul-mcp
 codex plugin add drophaul@drophaul
 codex plugin list
@@ -134,6 +142,8 @@ codex plugin list
 For a direct MCP-only setup without the bundled skills, use:
 
 ```bash
+codex features enable mcp_2026_07_28
+codex features list
 codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
 codex mcp login drophaul
 codex mcp get drophaul --json
@@ -150,14 +160,18 @@ default_tools_approval_mode = "writes"
 ```
 
 `default_tools_approval_mode = "writes"` makes Codex prompt for any tool not marked read-only —
-recommended for a dispatch system. After hosted OAuth dogfood and
-release-candidate verification passes, Codex completes OAuth outside the
-repository. Use the advanced direct-PAT section above only for a deliberate
-local bearer setup, and never put a token value in TOML.
+recommended for a dispatch system. Codex completes OAuth outside the
+repository; live release-candidate OAuth acceptance has not yet been recorded.
+Use the advanced direct-PAT section above only for a deliberate local bearer
+setup, and never put a token value in TOML.
 
 More detail: [`docs/codex.md`](docs/codex.md).
 
-### 4. ChatGPT (developer mode)
+### 4. ChatGPT (current developer-mode fallback)
+
+After OpenAI approves and publishes DropHaul, install it from the verified
+Plugins Directory listing shared by ChatGPT and Codex. No exact public listing
+URL is recorded yet, so use this custom connection for release testing.
 
 1. **Settings → Security and login** → turn on **Developer mode**.
 2. Go to [chatgpt.com/plugins](https://chatgpt.com/plugins) and click **+**.
@@ -168,10 +182,9 @@ More detail: [`docs/codex.md`](docs/codex.md).
    and complete the DropHaul OAuth sign-in.
 6. Review the tools and metadata discovered from the server.
 
-After hosted OAuth dogfood and release-candidate verification passes, the
-server's OpenAI connector `search` and `fetch` shapes allow read-only tools
+The server's OpenAI connector `search` and `fetch` shapes allow read-only tools
 to support company-knowledge workflows; full operational tools require the
-developer-mode connection.
+developer-mode connection. Live acceptance of those shapes remains unrecorded.
 
 ChatGPT's connector surface changes often. If the labels differ, follow OpenAI's current
 [Connect your MCP server to ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt)
@@ -180,6 +193,38 @@ guide.
 **Scan Tools** belongs to the separate public plugin submission portal, not this developer connection.
 
 More detail: [`docs/chatgpt.md`](docs/chatgpt.md).
+
+---
+
+## Advanced direct PAT setup
+
+Packaged portable, Claude, and Codex adapters use client-managed OAuth and contain no token. A personal
+access token is only for an operator who deliberately configures a direct local CLI connection.
+
+1. Sign in at [DropHaul API Tokens](https://drophaul.app/settings/api-tokens) as an **owner** or **admin**. No other role
+   can mint or revoke tokens.
+2. Open **Settings → API Tokens**.
+3. Choose kind **`operator`** (a human's own client; default 90 days, maximum 365). The `agent` kind is
+   for automated testing against non-production deployments only — see
+   [`docs/agent-testing.md`](docs/agent-testing.md).
+4. Select the smallest set of scopes that covers your workflow. **All four bundled skills work with
+   read-only scopes.**
+5. Create it and copy the value. It starts with `dh_pat_` and is shown **once** — DropHaul stores only a
+   SHA-256 hash plus the last four characters.
+
+```bash
+export DROPHAUL_MCP_KEY="dh_pat_…"
+```
+
+Scopes are always **intersected** with the token owner's live DropHaul permissions at request time. A
+scope can narrow what a token may do; it can never widen it. Revoking the user's role or org membership
+invalidates the token on its next request.
+
+| Read scopes | Write scopes |
+| --- | --- |
+| `records:read`, `jobs:read`, `routes:read`, `customers:read`, `units:read`, `sites:read`, `invoices:read`, `quotes:read`, `org:read`, `self:read`, `supplies:read` | `jobs:write`, `jobs:dispatch`, `routes:write`, `routes:optimize`, `customers:write`, `units:write`, `sites:write`, `invoices:write`, `quotes:write`, `self:write`, `supplies:write` |
+
+Scope families and safety guidance are in [`docs/security.md`](docs/security.md).
 
 ---
 
@@ -231,7 +276,7 @@ values, refresh tokens, customer content, or full tool arguments.
 
 | Page | Covers |
 | --- | --- |
-| [`docs/installation.md`](docs/installation.md) | All four clients in one page, plus the full scope table |
+| [`docs/installation.md`](docs/installation.md) | Directory-first status, all four clients, and advanced PAT setup |
 | [`docs/claude-code.md`](docs/claude-code.md) | Plugin install, OAuth, and advanced direct PAT setup |
 | [`docs/claude-ai.md`](docs/claude-ai.md) | Custom connector for Claude.ai, Desktop, and Cowork |
 | [`docs/chatgpt.md`](docs/chatgpt.md) | Developer-mode connector and test walkthrough |
