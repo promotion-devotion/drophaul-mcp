@@ -41,9 +41,10 @@ codex mcp get drophaul --json
 
 The browser flow signs in to DropHaul, requires an explicit company selection, and shows the requested scopes. Codex stores and refreshes OAuth credentials separately from the repository. Use `codex mcp logout drophaul` to clear them.
 
-The live flow works only for a Codex OAuth client already registered with
-DropHaul; adding the server does not register a new client. If login reports an
-unknown client, contact [support](mailto:support@drophaul.app).
+DropHaul publishes Client ID Metadata Documents (CIMD) for public OAuth clients.
+Complete the client-managed OAuth flow; no separate client registration step is
+required. If login reports an unknown or unsupported client, verify that Codex
+supports CIMD and contact [support](mailto:support@drophaul.app).
 
 ## Advanced PAT setup
 
