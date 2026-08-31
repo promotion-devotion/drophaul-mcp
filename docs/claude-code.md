@@ -38,21 +38,8 @@ interpolation. The package uses client-managed OAuth for the HTTP server; use
 the separate direct-PAT setup below only when an operator deliberately chooses
 a local bearer credential.
 
-This Git-backed marketplace is the standard technical installation path. It is
-separate from Anthropic's Connectors Directory; once a verified DropHaul
-directory listing is published, that listing becomes the default for hosted
-Claude users.
-
-## Publication and install evidence
-
-The prior 1.0.0 allowlisted package is published on public `main`. Claude Code
-2.1.223 historically clean-installed that package from an isolated
-configuration, proving package discovery only; the check predates the v2
-runtime default and did not exercise the server. Claude Code 2.1.247 then
-clean-installed the local generated 1.1.0 candidate from a separate isolated
-configuration and listed it as enabled, again without connecting to the
-server. Public-source 1.1.0 installation and hosted OAuth remain pending.
-Package publication is not evidence of a Claude or OpenAI directory listing.
+This Git-backed marketplace is the standard technical installation path for
+Claude Code.
 
 ## Advanced direct PAT setup
 
@@ -79,7 +66,9 @@ claude mcp add --transport http --scope local drophaul-oauth \
   https://majestic-emu-550.convex.site/mcp
 ```
 
-Run `/mcp`, choose `drophaul-oauth`, and follow **Authenticate**. Until public client registration is authorized, this works only with a client already registered by the operator.
+Run `/mcp`, choose `drophaul-oauth`, and follow **Authenticate**. If the client
+is not recognized, contact [DropHaul support](mailto:support@drophaul.app); do
+not invent client credentials.
 
 Use **Clear authentication** in `/mcp` to remove local OAuth credentials. Revoke DropHaul consent as well when access should end.
 

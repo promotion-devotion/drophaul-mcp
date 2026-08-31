@@ -1,11 +1,8 @@
 # Connect ChatGPT to DropHaul
 
-The recommended end state is installation from DropHaul's verified Plugins
-Directory listing, shared by ChatGPT and Codex. That listing is not submitted,
-approved, or published, so there is no live **Add** link to follow yet. Until an
-exact public listing URL is recorded, use the custom MCP connection below. It
-is a developer-mode fallback for an already registered OAuth client, not proof
-of directory availability or live OAuth acceptance.
+Add DropHaul as a custom MCP connection in ChatGPT developer mode. The
+connection uses client-managed OAuth, so do not create or paste a personal
+access token.
 
 ## Create the app
 

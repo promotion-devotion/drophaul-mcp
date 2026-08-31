@@ -8,15 +8,11 @@ https://majestic-emu-550.convex.site/mcp
 
 Use the client-managed OAuth setup for normal installs. Do not configure a PAT and OAuth on the same Codex server entry.
 
-Once the verified DropHaul Plugins Directory listing is published, install it
-from **Plugins** in ChatGPT/Codex. No exact listing URL is recorded today, so
-the Git-backed package and literal endpoint below remain the technical paths.
-
 ## Plugin marketplace package
 
 The generated repository includes a repo-scoped marketplace at
 `.agents/plugins/marketplace.json` and an installable package at
-`plugins/drophaul`. The prior 1.0.0 generated tree is published on public `main`.
+`plugins/drophaul`.
 DropHaul uses the strict `2026-07-28` MCP wire contract. On Codex 0.148.0 the
 matching runtime is still an under-development feature and is disabled by
 default, so enable it and verify that its effective state is `true` before
@@ -34,14 +30,6 @@ codex plugin marketplace add promotion-devotion/drophaul-mcp
 codex plugin add drophaul@drophaul
 codex plugin list
 ```
-
-An isolated `CODEX_HOME` verified this exact public install at version 1.0.0
-with `ON_INSTALL` authentication, then removed its temporary state. This proves
-package discovery and installation, not hosted OAuth or public directory
-approval. Do not test by editing a normal user's plugin directories.
-
-Version 1.1.0 is the proposed candidate. Do not treat the prior public 1.0.0
-install as evidence that 1.1.0 is merged, published, or clean-installed.
 
 ## OAuth setup
 

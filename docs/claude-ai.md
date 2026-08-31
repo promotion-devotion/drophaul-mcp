@@ -2,15 +2,6 @@
 
 Claude.ai, Cowork, and Claude Desktop use the same remote connector. Claude connects to the server from Anthropic's cloud rather than from your device, so the endpoint must be reachable over the public internet. Individual users add a connector in their connector settings; organization owners add it from organization connector settings. Free, Pro, Max, Team, and Enterprise plans support custom connectors; Free is limited to one. Availability also depends on the current workspace policy.
 
-## Current availability
-
-DropHaul's Connectors Directory listing is prepared but not submitted,
-approved, or published. Until an exact verified listing URL is recorded, the
-custom-connector flow below is the simple fallback. Live Claude OAuth
-acceptance has not yet been recorded, so treat these steps as a release test as
-well as setup instructions. Do not claim directory availability from a Git
-package or a successful connection in another client.
-
 ## Add the custom connector
 
 1. On Free, Pro, or Max, open **Customize → Connectors** and choose **+**, then **Add custom connector**. Free supports one custom connector. On Team or Enterprise, an owner or primary owner opens **Organization settings → Connectors**, chooses **Add**, hovers **Custom**, and selects **Web**.
@@ -31,10 +22,6 @@ and does not advertise a dynamic client registration endpoint. If **Connect**
 reports an unknown or unsupported client, contact
 [DropHaul support](mailto:support@drophaul.app) rather than inventing a client
 configuration.
-
-After Anthropic approves and publishes the DropHaul listing, install it from
-the verified listing instead of manually pasting this endpoint. Add that link
-here only after it is publicly reachable.
 
 ## Safe first walkthrough
 

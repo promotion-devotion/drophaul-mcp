@@ -17,30 +17,13 @@ protocol version and client capabilities, every current DropHaul result is one
 JSON response, and `server/discover` replaces `initialize`. It accepts either a
 DropHaul personal access token as a bearer credential, or an OAuth 2.1 authorization-code + PKCE (S256) flow discoverable at `/.well-known/oauth-authorization-server`, `/.well-known/oauth-protected-resource`, and `/.well-known/oauth-protected-resource/mcp`.
 
-> **Current external status:** a development MCP PAT smoke completed
-> `server/discover`, listed 98 credential-authorized tools, and called the read-only `whoami` tool on the
-> configured personal development deployment. It did not exercise staging or
-> production OAuth, and no staging deployment is currently recorded. The local
-> 1.1.0 catalog now contains 99 tools, but that count is test evidence
-> rather than a relabeled authenticated smoke.
-> OpenAI OAuth installation, refresh, and disconnect still require dogfood after
-> the reviewed backend is deployed.
-> The package is published and passed an isolated Codex marketplace install,
-> but that does not establish a public directory listing or an approved OAuth
-> connection.
-
 ## Choose a setup path
 
-The long-term default is one-click installation from the verified DropHaul
-listing shared by ChatGPT and Codex, or from the verified DropHaul listing in
-Claude's Connectors Directory. Those listings are not published yet, so there
-is no live directory **Add** button or listing URL to follow.
-
-Until an exact approved listing URL is recorded, use the literal endpoint above
-as a custom Streamable HTTP connection and complete client-managed OAuth. The
-Git-backed Claude Code/Codex package is the standard technical alternative.
-Neither fallback requires copying a PAT. A client must currently be registered
-with DropHaul; hosted OAuth acceptance remains a release gate.
+For ChatGPT, Claude.ai, Claude Desktop, and Cowork, add the literal endpoint
+above as a custom Streamable HTTP connection and complete client-managed OAuth.
+For Claude Code and Codex, install the Git-backed package to get the same remote
+server plus the bundled workflow skills. Neither normal path requires copying
+a PAT.
 
 ## Claude Code
 
@@ -80,8 +63,7 @@ The bundled `.mcp.json`:
 ```
 
 The bundled adapter contains no bearer header or credential environment
-variable. After hosted OAuth dogfood and release-candidate verification passes,
-Claude Code completes OAuth for the HTTP server.
+variable. Claude Code completes OAuth for the HTTP server.
 
 Prefer no plugin?
 
@@ -98,9 +80,7 @@ claude mcp add --transport http --scope local \
 ## Claude.ai and Claude Desktop
 
 Claude connects **from Anthropic's cloud**, not from your machine — true for
-Claude Desktop and Cowork as well. The steps below are the current custom-
-connector fallback while DropHaul's Connectors Directory listing and live
-hosted-client acceptance remain pending.
+Claude Desktop and Cowork as well.
 
 **Free, Pro, and Max**
 
@@ -145,8 +125,7 @@ ChatGPT's connector surface changes frequently. If the menu labels differ, follo
 
 ## Codex CLI (client-managed OAuth)
 
-The published repository is a Codex marketplace. An isolated install from
-public `main` verified version 1.0.0 with `ON_INSTALL` authentication:
+The published repository is a Codex marketplace:
 
 ```bash
 codex features enable mcp_2026_07_28
@@ -185,7 +164,7 @@ local/developer setup only.
 ## Advanced: personal access token
 
 Personal access tokens are for deliberate direct-bearer setups only. The
-directory, custom OAuth, Claude package, and Codex package paths contain no PAT.
+custom OAuth, Claude package, and Codex package paths contain no PAT.
 
 1. Sign in at [DropHaul API Tokens](https://drophaul.app/settings/api-tokens)
    as an **owner** or **admin**. No other role can mint or revoke tokens.

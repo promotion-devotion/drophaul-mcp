@@ -17,50 +17,28 @@ HTTPS endpoint operated by DropHaul. What ships here is:
 
 ---
 
-## Status: 1.1.0 candidate; external service approval pending
+## Hosted server
 
 The bundled configuration points at
-`https://majestic-emu-550.convex.site/mcp`. A development MCP PAT smoke completed
-`server/discover`, listed 98 credential-authorized tools, and called the read-only `whoami` tool on the
-configured personal development deployment. It did not exercise staging or
-production OAuth, and no staging deployment is currently recorded. The local
-1.1.0 catalog now contains 99 tools, but that count has not been relabeled as a
-new authenticated smoke. The backend
-must be deployed and rescanned, and the OpenAI OAuth installation must be
-dogfooded, before public onboarding. The prior 1.0.0 allowlisted package is published at
-[`promotion-devotion/drophaul-mcp`](https://github.com/promotion-devotion/drophaul-mcp),
-and an isolated Codex marketplace install from public `main` passed. Repository
-publication and package installation are not evidence of vendor submission,
-approval, or directory availability.
-
-This tree is the proposed 1.1.0 candidate. Until its pull request is merged,
-the prior public 1.0.0 clean-install evidence must not be relabeled as a public
-1.1.0 install.
-
-Installing a package does not establish a vendor listing or grant data access. OAuth sign-in is required
-for the hosted endpoint, but no client is currently verified to complete the live flow for the OpenAI
-release-candidate OAuth installation. Only clients already registered with DropHaul may be eligible until OAuth dogfood passes.
-Installing or adding a server does not register a new OAuth client. For a separate
-deployment, configure that client with that deployment's literal HTTPS `/mcp` endpoint. Verify any
-nonproduction endpoint with your DropHaul operator before relying on it.
+`https://majestic-emu-550.convex.site/mcp`. OAuth sign-in is required before the
+hosted endpoint grants access to DropHaul data. Installing or adding the server
+does not grant data access or register a new OAuth client. For a separate
+deployment, configure that client with the deployment's literal HTTPS `/mcp`
+endpoint and verify the endpoint with your DropHaul operator.
 
 ## Start here
 
-The intended default is one-click installation from the verified DropHaul
-listing shared by ChatGPT and Codex, or from the verified DropHaul listing in
-Claude's Connectors Directory. Neither listing has an exact public URL yet. Do
-not trust an unofficial **Add** link.
-
-Until publication, add this literal Streamable HTTP endpoint as a custom
-connection and complete client-managed OAuth:
+For ChatGPT, Claude.ai, Claude Desktop, and Cowork, add this literal Streamable
+HTTP endpoint as a custom connection and complete client-managed OAuth:
 
 ```text
 https://majestic-emu-550.convex.site/mcp
 ```
 
-The Git-backed Claude Code/Codex package below is the standard technical path.
-Neither normal path requires a PAT. The PAT section is only for an operator who
-deliberately needs a direct bearer connection.
+For Claude Code and Codex, the Git-backed package below provides the same remote
+server plus the bundled workflow skills. Neither normal path requires a PAT.
+The PAT section is only for an operator who deliberately needs a direct bearer
+connection.
 
 ## Install
 
@@ -87,8 +65,6 @@ claude plugin install drophaul@drophaul
 The installed adapter uses the literal hosted URL
 `https://majestic-emu-550.convex.site/mcp` and client-managed OAuth; it does not
 read a token environment variable or send a bundled Authorization header.
-Fresh Claude Code OAuth acceptance is still a release gate and has not been
-recorded.
 
 For an advanced direct-PAT setup without the plugin, add the server directly:
 
@@ -119,17 +95,12 @@ DropHaul does not currently offer public self-service OAuth client registration.
 unknown client, contact [support@drophaul.app](mailto:support@drophaul.app);
 do not invent a client configuration or paste unrelated credentials.
 
-This custom connection is the current fallback. After Anthropic publishes the
-verified DropHaul Connectors Directory listing, install from that exact listing
-instead.
-
 More detail: [`docs/claude-ai.md`](docs/claude-ai.md).
 
 ### 3. Codex CLI
 
-The published repository is also a Codex marketplace. Add it and install
-DropHaul from **Plugins** in the ChatGPT desktop app. A clean isolated install
-from public `main` verified version 1.0.0 with `ON_INSTALL` authentication:
+The repository is also a Codex marketplace. Add it and install DropHaul from
+**Plugins** in the ChatGPT desktop app:
 
 ```bash
 codex features enable mcp_2026_07_28
@@ -161,30 +132,24 @@ default_tools_approval_mode = "writes"
 
 `default_tools_approval_mode = "writes"` makes Codex prompt for any tool not marked read-only —
 recommended for a dispatch system. Codex completes OAuth outside the
-repository; live release-candidate OAuth acceptance has not yet been recorded.
-Use the advanced direct-PAT section above only for a deliberate local bearer
-setup, and never put a token value in TOML.
+repository. Use the advanced direct-PAT section above only for a deliberate
+local bearer setup, and never put a token value in TOML.
 
 More detail: [`docs/codex.md`](docs/codex.md).
 
-### 4. ChatGPT (current developer-mode fallback)
-
-After OpenAI approves and publishes DropHaul, install it from the verified
-Plugins Directory listing shared by ChatGPT and Codex. No exact public listing
-URL is recorded yet, so use this custom connection for release testing.
+### 4. ChatGPT custom connection
 
 1. **Settings → Security and login** → turn on **Developer mode**.
 2. Go to [chatgpt.com/plugins](https://chatgpt.com/plugins) and click **+**.
 3. Give it a name and description.
 4. Under **Connection**, enter the full URL including the `/mcp` path:
    `https://majestic-emu-550.convex.site/mcp`
-5. After the release backend is deployed and the approved OpenAI OAuth client passes dogfood, create the connection
-   and complete the DropHaul OAuth sign-in.
+5. Create the connection and complete the DropHaul OAuth sign-in.
 6. Review the tools and metadata discovered from the server.
 
 The server's OpenAI connector `search` and `fetch` shapes allow read-only tools
 to support company-knowledge workflows; full operational tools require the
-developer-mode connection. Live acceptance of those shapes remains unrecorded.
+developer-mode connection.
 
 ChatGPT's connector surface changes often. If the labels differ, follow OpenAI's current
 [Connect your MCP server to ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt)
@@ -276,7 +241,7 @@ values, refresh tokens, customer content, or full tool arguments.
 
 | Page | Covers |
 | --- | --- |
-| [`docs/installation.md`](docs/installation.md) | Directory-first status, all four clients, and advanced PAT setup |
+| [`docs/installation.md`](docs/installation.md) | Setup for all four clients and advanced PAT configuration |
 | [`docs/claude-code.md`](docs/claude-code.md) | Plugin install, OAuth, and advanced direct PAT setup |
 | [`docs/claude-ai.md`](docs/claude-ai.md) | Custom connector for Claude.ai, Desktop, and Cowork |
 | [`docs/chatgpt.md`](docs/chatgpt.md) | Developer-mode connector and test walkthrough |
