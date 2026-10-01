@@ -33,7 +33,7 @@ The plugin provides four prompt-only skills:
 - `/drophaul:invoice-chase`
 
 The bundled `.mcp.json` uses the literal production endpoint
-`https://majestic-emu-550.convex.site/mcp` with no header or environment
+`https://api.drophaul.app/mcp` with no header or environment
 interpolation. The package uses client-managed OAuth for the HTTP server; use
 the separate direct-PAT setup below only when an operator deliberately chooses
 a local bearer credential.
@@ -49,7 +49,7 @@ claude mcp add \
   --transport http \
   --scope local \
   --header "Authorization: Bearer ${DROPHAUL_MCP_KEY}" \
-  drophaul https://majestic-emu-550.convex.site/mcp
+  drophaul https://api.drophaul.app/mcp
 claude mcp get drophaul
 ```
 
@@ -63,7 +63,7 @@ Use the plugin for team workflows; use local scope for a personal credential. Ne
 
 ```sh
 claude mcp add --transport http --scope local drophaul-oauth \
-  https://majestic-emu-550.convex.site/mcp
+  https://api.drophaul.app/mcp
 ```
 
 Run `/mcp`, choose `drophaul-oauth`, and follow **Authenticate**. If the client

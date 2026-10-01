@@ -20,7 +20,7 @@ HTTPS endpoint operated by DropHaul. What ships here is:
 ## Hosted server
 
 The bundled configuration points at
-`https://majestic-emu-550.convex.site/mcp`. OAuth sign-in is required before the
+`https://api.drophaul.app/mcp`. OAuth sign-in is required before the
 hosted endpoint grants access to DropHaul data. Installing or adding the server
 does not grant data access or register a new OAuth client. For a separate
 deployment, configure that client with the deployment's literal HTTPS `/mcp`
@@ -32,7 +32,7 @@ For ChatGPT, Claude.ai, Claude Desktop, and Cowork, add this literal Streamable
 HTTP endpoint as a custom connection and complete client-managed OAuth:
 
 ```text
-https://majestic-emu-550.convex.site/mcp
+https://api.drophaul.app/mcp
 ```
 
 For Claude Code and Codex, the Git-backed package below provides the same remote
@@ -63,7 +63,7 @@ claude plugin install drophaul@drophaul
 ```
 
 The installed adapter uses the literal hosted URL
-`https://majestic-emu-550.convex.site/mcp` and client-managed OAuth; it does not
+`https://api.drophaul.app/mcp` and client-managed OAuth; it does not
 read a token environment variable or send a bundled Authorization header.
 
 For an advanced direct-PAT setup without the plugin, add the server directly:
@@ -71,7 +71,7 @@ For an advanced direct-PAT setup without the plugin, add the server directly:
 ```bash
 claude mcp add --transport http --scope local \
   --header "Authorization: Bearer ${DROPHAUL_MCP_KEY}" \
-  drophaul https://majestic-emu-550.convex.site/mcp
+  drophaul https://api.drophaul.app/mcp
 ```
 
 More detail: [`docs/claude-code.md`](docs/claude-code.md).
@@ -82,7 +82,7 @@ Claude connects from Anthropic's cloud, not from your machine, so the endpoint m
 public internet. The connector uses OAuth and does not require a personal access token.
 
 **Free / Pro / Max** — **Customize → Connectors** → **+** → **Add custom connector**, enter
-`https://majestic-emu-550.convex.site/mcp`, click **Add**, then **Connect** and sign in to DropHaul.
+`https://api.drophaul.app/mcp`, click **Add**, then **Connect** and sign in to DropHaul.
 Free accounts support one custom connector.
 
 **Team / Enterprise** — an Owner or Primary Owner adds it once under **Organization settings →
@@ -117,7 +117,7 @@ For a direct MCP-only setup without the bundled skills, use:
 ```bash
 codex features enable mcp_2026_07_28
 codex features list
-codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
+codex mcp add drophaul --url https://api.drophaul.app/mcp
 codex mcp login drophaul
 codex mcp get drophaul --json
 ```
@@ -126,7 +126,7 @@ Or write `~/.codex/config.toml` directly:
 
 ```toml
 [mcp_servers.drophaul]
-url = "https://majestic-emu-550.convex.site/mcp"
+url = "https://api.drophaul.app/mcp"
 startup_timeout_sec = 20
 tool_timeout_sec = 120
 default_tools_approval_mode = "writes"
@@ -145,7 +145,7 @@ More detail: [`docs/codex.md`](docs/codex.md).
 2. Go to [chatgpt.com/plugins](https://chatgpt.com/plugins) and click **+**.
 3. Give it a name and description.
 4. Under **Connection**, enter the full URL including the `/mcp` path:
-   `https://majestic-emu-550.convex.site/mcp`
+   `https://api.drophaul.app/mcp`
 5. Create the connection and complete the DropHaul OAuth sign-in.
 6. Review the tools and metadata discovered from the server.
 

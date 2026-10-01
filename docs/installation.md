@@ -5,10 +5,10 @@ One page covering every supported client: Claude Code, Claude.ai, ChatGPT, and t
 ## Endpoint
 
 ```text
-https://majestic-emu-550.convex.site/mcp
+https://api.drophaul.app/mcp
 ```
 
-That is the production Convex deployment (`majestic-emu-550`) HTTP action. Staging uses the same path on its own `*.convex.site` host; configure a staging URL directly in the client being tested.
+That is the canonical production HTTP action. The legacy production `convex.site` origin remains available for ingress, but its discovery documents advertise the canonical issuer, resource, token, and JWKS URLs. Access tokens minted for the legacy issuer/audience are not accepted. A refresh token may produce a canonical access token automatically if the client omits `resource`; an explicitly legacy resource is not rewritten. If refresh fails, reconnect at the canonical URL. Staging uses the same path on its own `*.convex.site` host; configure a staging URL directly in the client being tested.
 
 The server speaks strict, stateless **MCP 2026-07-28 over HTTP**. Requests use
 `POST`; `OPTIONS` serves CORS; `GET` and `DELETE` explicitly return 405 because
@@ -59,7 +59,7 @@ The plugin bundles the remote server plus four prompt-only skills:
 The bundled `.mcp.json`:
 
 ```json
-{"mcpServers":{"drophaul":{"type":"http","url":"https://majestic-emu-550.convex.site/mcp"}}}
+{"mcpServers":{"drophaul":{"type":"http","url":"https://api.drophaul.app/mcp"}}}
 ```
 
 The bundled adapter contains no bearer header or credential environment
@@ -74,7 +74,7 @@ Add the server with a deliberately local bearer credential:
 ```bash
 claude mcp add --transport http --scope local \
   --header "Authorization: Bearer ${DROPHAUL_MCP_KEY}" \
-  drophaul https://majestic-emu-550.convex.site/mcp
+  drophaul https://api.drophaul.app/mcp
 ```
 
 ## Claude.ai and Claude Desktop
@@ -88,7 +88,7 @@ Free accounts support one custom connector.
 
 1. Go to **Customize → Connectors**.
 2. Click **+**, then **Add custom connector**.
-3. Enter `https://majestic-emu-550.convex.site/mcp`.
+3. Enter `https://api.drophaul.app/mcp`.
 4. Click **Add**, then **Connect**, and complete the DropHaul sign-in.
 
 **Team and Enterprise**
@@ -113,7 +113,7 @@ Connector URLs are not editable in place; remove and re-add to change one.
 1. Open **Settings → Security and login** and turn on **Developer mode**.
 2. Go to [chatgpt.com/plugins](https://chatgpt.com/plugins) and click **+**.
 3. Give it a name and description.
-4. Under **Connection**, enter the server URL including the `/mcp` path: `https://majestic-emu-550.convex.site/mcp`
+4. Under **Connection**, enter the server URL including the `/mcp` path: `https://api.drophaul.app/mcp`
 5. Create the connection, complete the OAuth sign-in, and review the requested scopes.
 6. Review the tools and metadata discovered from the server.
 
@@ -140,7 +140,7 @@ For a direct MCP-only setup without the packaged skills, use:
 ```bash
 codex features enable mcp_2026_07_28
 codex features list
-codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
+codex mcp add drophaul --url https://api.drophaul.app/mcp
 codex mcp login drophaul
 ```
 
@@ -148,7 +148,7 @@ Or edit `~/.codex/config.toml` directly:
 
 ```toml
 [mcp_servers.drophaul]
-url = "https://majestic-emu-550.convex.site/mcp"
+url = "https://api.drophaul.app/mcp"
 startup_timeout_sec = 20
 tool_timeout_sec = 120
 default_tools_approval_mode = "writes"

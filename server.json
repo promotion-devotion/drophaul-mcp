@@ -11,7 +11,7 @@
 	"remotes": [
 		{
 			"type": "streamable-http",
-			"url": "https://majestic-emu-550.convex.site/mcp"
+			"url": "https://api.drophaul.app/mcp"
 		}
 	]
 }
