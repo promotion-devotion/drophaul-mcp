@@ -12,7 +12,7 @@ access token.
 4. Under **Connection**, enter the exact MCP endpoint, including the `/mcp` path:
 
    ```text
-   https://majestic-emu-550.convex.site/mcp
+   https://api.drophaul.app/mcp
    ```
 
 5. Create the connection. ChatGPT follows the server's OAuth discovery; do not paste a bearer value or client secret into the connection.

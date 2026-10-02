@@ -5,7 +5,7 @@ Always confirm the endpoint is the exact HTTPS URL ending in `/mcp`. DropHaul do
 ## Connection checklist
 
 1. Confirm the client supports Streamable HTTP and the current MCP protocol.
-2. Confirm the endpoint is `https://majestic-emu-550.convex.site/mcp` or the exact assigned staging endpoint.
+2. Confirm the endpoint is `https://api.drophaul.app/mcp` or the exact assigned staging endpoint.
 3. For a packaged portable, Claude, or Codex install, complete the client-managed OAuth flow. These packages contain no bearer header or token environment variable.
 4. Only for an advanced direct-PAT setup, confirm the environment variable exists in the process that launches the client and the header expands to `Authorization: Bearer …`.
 5. For OAuth, refetch protected-resource and authorization-server metadata. DropHaul supports Client ID Metadata Documents (CIMD) for public OAuth clients, so complete the client-managed OAuth flow without a separate client registration step.

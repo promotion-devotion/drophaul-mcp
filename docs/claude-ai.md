@@ -8,7 +8,7 @@ Claude.ai, Cowork, and Claude Desktop use the same remote connector. Claude conn
 2. Enter this exact URL:
 
    ```text
-   https://majestic-emu-550.convex.site/mcp
+   https://api.drophaul.app/mcp
    ```
 
 3. Choose **Add**. On Team or Enterprise, each member then opens **Customize → Connectors**, finds the connector, and chooses **Connect**; on Free, Pro, or Max, choose **Connect** yourself.

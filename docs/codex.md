@@ -3,7 +3,7 @@
 DropHaul exposes one Streamable HTTP endpoint:
 
 ```text
-https://majestic-emu-550.convex.site/mcp
+https://api.drophaul.app/mcp
 ```
 
 Use the client-managed OAuth setup for normal installs. Do not configure a PAT and OAuth on the same Codex server entry.
@@ -34,7 +34,7 @@ codex plugin list
 ## OAuth setup
 
 ```sh
-codex mcp add drophaul --url https://majestic-emu-550.convex.site/mcp
+codex mcp add drophaul --url https://api.drophaul.app/mcp
 codex mcp login drophaul
 codex mcp get drophaul --json
 ```
@@ -53,7 +53,7 @@ Create an **operator** token at [DropHaul API Tokens](https://drophaul.app/setti
 ```sh
 export DROPHAUL_MCP_KEY='<paste the one-time token here>'
 codex mcp add drophaul \
-  --url https://majestic-emu-550.convex.site/mcp \
+  --url https://api.drophaul.app/mcp \
   --bearer-token-env-var DROPHAUL_MCP_KEY
 codex mcp get drophaul --json
 ```
@@ -62,7 +62,7 @@ The equivalent `~/.codex/config.toml` entry is:
 
 ```toml
 [mcp_servers.drophaul]
-url = "https://majestic-emu-550.convex.site/mcp"
+url = "https://api.drophaul.app/mcp"
 bearer_token_env_var = "DROPHAUL_MCP_KEY"
 ```
 
