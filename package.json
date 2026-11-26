@@ -1,0 +1,23 @@
+{
+	"name": "drophaul-mcp-distribution",
+	"private": true,
+	"type": "module",
+	"packageManager": "bun@1.4.4",
+	"scripts": {
+		"validate": "bun tooling/validate.ts",
+		"smoke": "bun tooling/smoke.ts",
+		"package:codex": "bun tooling/package-plugin.ts",
+		"lint": "biome check .",
+		"format": "biome check --write .",
+		"typecheck": "tsc -p .",
+		"check": "bun run lint && bun run typecheck && bun run validate && bun test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.15",
+		"@types/bun": "1.4.3",
+		"ajv": "8.20.0",
+		"ajv-formats": "3.0.1",
+		"effect": "4.0.7",
+		"typescript": "5.9.3"
+	}
+}
