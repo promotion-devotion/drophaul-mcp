@@ -281,6 +281,34 @@ part of the distribution.
 
 ---
 
+## Development
+
+This repository is generated from DropHaul's private source of truth, so change manifests, skills,
+and documentation there and sync them here. The tooling in this repository only checks and ships
+what is generated. It needs [Bun](https://bun.sh) (the version in `package.json`).
+
+```bash
+bun install
+bun run check        # Biome, TypeScript, distribution rules, and tests
+bun run validate     # distribution rules only
+bun run smoke        # unauthenticated OAuth discovery against production
+```
+
+The distribution rules cover manifest schemas (including the vendored MCP Registry schema),
+version agreement, the single production endpoint, byte-identical `plugins/drophaul` mirrors,
+skill frontmatter, relative links, and credential, private-path, and raw-ID scanning.
+
+CI runs `bun run check` and `actionlint` on every pull request on GitHub-hosted runners. A
+daily workflow runs the discovery smoke test without credentials.
+
+**Releases.** Bump `version` in `server.json` and every plugin manifest, merge, then push a
+matching tag such as `v1.2.0`. The release workflow verifies the tag against `server.json`,
+refuses a version already in the MCP Registry or already released here, publishes with
+`mcp-publisher login github-oidc`, and attaches a deterministic Codex plugin ZIP of
+`plugins/drophaul` with its SHA-256 to the GitHub release.
+
+---
+
 ## Support
 
 [support@drophaul.app](mailto:support@drophaul.app) — include client name and version, UTC timestamp,
