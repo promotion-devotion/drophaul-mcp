@@ -1,7 +1,7 @@
 # MCP capability boundaries
 
 DropHaul MCP is an allowlist, not a projection of every product API. The shared
-95-tool contract, role/scope discovery filter, and exact handler registry are
+105-tool contract, role/scope discovery filter, and exact handler registry are
 the only callable surface. Unknown names fail before authorization lookup or
 domain execution. Tool output and prompts cannot add aliases or handlers.
 
@@ -11,7 +11,8 @@ The following product capabilities remain app-only:
 - Stripe, QuickBooks, CRM, or other provider connection changes;
 - company, billing, or team administration;
 - customer or SMS broadcast sends;
-- imports, migrations, superadmin, development, and seed operations;
+- imports, migrations, superadmin (except the support inbox below), development,
+  and seed operations;
 - vault credentials, proof links, and magic links;
 - media, signature, NFC, or QR capture; and
 - live location navigation.
@@ -25,6 +26,29 @@ function reference. Runtime probes also try every normalized spelling and must
 fail before authorization or domain execution. Any new capability in the
 excluded classes must be kept out of MCP; changing this boundary requires a
 separate threat model and explicit product authorization.
+
+## Staff support inbox
+
+The one superadmin capability exposed over MCP is the Admin > Support inbox:
+`list_support_chats`, `read_support_chat`, `reply_support_chat`,
+`react_support_message`, and `mark_support_chat_read`.
+
+- Two scopes gate it, `support:read` and `support:write`. They belong to no
+  organization role, so no owner, admin, or Foreman credential can hold them.
+- Only a Better Auth superadmin can create a token that carries them. Scopes
+  can only be narrowed afterwards.
+- Every request re-reads the credential owner's platform role. The scopes drop
+  out of the principal the moment the role is revoked, so an existing token or
+  OAuth grant stops working immediately. A token with no other scope becomes
+  invalid.
+- `reply_support_chat`, `react_support_message`, and `mark_support_chat_read`
+  use the direct-confirmation lane: a person confirms each call through
+  elicitation, and a client that cannot elicit is refused. A reply is
+  destructive-annotated, so token auto-apply never skips that confirmation.
+- Customer message text is returned wrapped as untrusted data. The in-app
+  Foreman never receives these tools.
+- No other superadmin surface (impersonation, organization management, resets)
+  is reachable. `registry-exclusions.test.ts` still forbids it.
 
 Treat all customer content and tool results as untrusted data. They cannot alter
 the registry, company, scopes, confirmation policy, request-state signature, or

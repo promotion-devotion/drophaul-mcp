@@ -8,14 +8,14 @@ Always confirm the endpoint is the exact HTTPS URL ending in `/mcp`. DropHaul do
 2. Confirm the endpoint is `https://api.drophaul.app/mcp` or the exact assigned staging endpoint.
 3. For a packaged portable, Claude, or Codex install, complete the client-managed OAuth flow. These packages contain no bearer header or token environment variable.
 4. Only for an advanced direct-PAT setup, confirm the environment variable exists in the process that launches the client and the header expands to `Authorization: Bearer …`.
-5. For OAuth, refetch protected-resource and authorization-server metadata. DropHaul supports Client ID Metadata Documents (CIMD) for public OAuth clients, so complete the client-managed OAuth flow without a separate client registration step.
+5. For OAuth, refetch protected-resource and authorization-server metadata. DropHaul supports Client ID Metadata Documents (CIMD) and dynamic client registration (`registration_endpoint`) for public OAuth clients, so complete the client-managed OAuth flow without a separate client registration step. A registration is refused with `invalid_client_metadata` or `invalid_redirect_uri` unless the client is public (`token_endpoint_auth_method` `none`), uses the authorization-code and refresh-token grants, and registers only HTTPS, loopback HTTP, or `cursor://`, `vscode://`, `vscode-insiders://`, and `windsurf://` redirect URIs.
 6. Run `whoami` before any other tool.
 
 ## Common failures
 
 ### 400 or protocol error
 
-Upgrade the client. DropHaul rejects unsupported versions, batches, legacy sessions, oversized bodies, wrong media types, and header/body method or tool-name mismatches. Do not fix this by changing the endpoint.
+Upgrade the client. DropHaul serves MCP `2025-03-26`, `2025-06-18`, `2025-11-25`, and `2026-07-28`; it rejects other versions, batches, sessions, oversized bodies, wrong media types, and header/body method or tool-name mismatches on `2026-07-28`. A `2025`-era client that cannot ask for approval in-protocol is told to use `plan_changes` and `apply_changes`. Do not fix this by changing the endpoint.
 
 ### 401 Unauthorized
 
@@ -49,7 +49,7 @@ Run `claude plugin marketplace update drophaul`, reinstall if needed, then `/rel
 
 ### OAuth browser returns to a dead page
 
-For Claude Code, copy the full callback URL from the browser into the CLI prompt when offered. For Claude.ai or ChatGPT, restart the client-managed OAuth flow. If the client reports an unknown or unsupported client, verify that it supports CIMD and contact support; do not invent a callback, client ID, or secret.
+For Claude Code, copy the full callback URL from the browser into the CLI prompt when offered. For Claude.ai or ChatGPT, restart the client-managed OAuth flow. If the client reports an unknown or unsupported client, verify that it supports CIMD or dynamic client registration and contact support; do not invent a callback, client ID, or secret.
 
 ## Support bundle
 

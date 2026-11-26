@@ -4,7 +4,7 @@
 
 - Adds the hosted DropHaul MCP connection with OAuth 2.1 and per-tool scope
   declarations.
-- Exposes 99 role-filtered tools for dispatch, route, fleet, customer, and
+- Exposes 100 role-filtered tools for dispatch, route, fleet, customer, and
   invoice workflows with complete safety annotations.
 - Adds read-only schedule and route MCP App cards.
 - Bundles four prompt-only workflows: `plan-my-day`, `optimize-routes`,

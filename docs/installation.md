@@ -10,11 +10,17 @@ https://api.drophaul.app/mcp
 
 That is the canonical production HTTP action. The legacy production `convex.site` origin remains available for ingress, but its discovery documents advertise the canonical issuer, resource, token, and JWKS URLs. Access tokens minted for the legacy issuer/audience are not accepted. A refresh token may produce a canonical access token automatically if the client omits `resource`; an explicitly legacy resource is not rewritten. If refresh fails, reconnect at the canonical URL. Staging uses the same path on its own `*.convex.site` host; configure a staging URL directly in the client being tested.
 
-The server speaks strict, stateless **MCP 2026-07-28 over HTTP**. Requests use
-`POST`; `OPTIONS` serves CORS; `GET` and `DELETE` explicitly return 405 because
-there is no session stream or termination operation. Every request carries its
-protocol version and client capabilities, every current DropHaul result is one
-JSON response, and `server/discover` replaces `initialize`. It accepts either a
+The server is stateless and speaks two protocol eras on the same URL. Current
+clients use **MCP 2026-07-28 over HTTP**: every request carries its protocol
+version and client capabilities, and `server/discover` replaces `initialize`.
+Clients that still open with the `initialize` handshake (`2025-03-26`,
+`2025-06-18`, `2025-11-25`), including Claude, Codex, and Mistral today, are
+served per request without a session. Requests use `POST`; `OPTIONS` serves
+CORS; `GET` and `DELETE` explicitly return 405 because there is no session
+stream or termination operation. Every DropHaul result is one JSON response.
+Tasks and in-protocol approval prompts exist only on `2026-07-28`; a `2025`-era
+client receives the `plan_changes` and `apply_changes` approval path, so no write
+runs without the same confirmation. It accepts either a
 DropHaul personal access token as a bearer credential, or an OAuth 2.1 authorization-code + PKCE (S256) flow discoverable at `/.well-known/oauth-authorization-server`, `/.well-known/oauth-protected-resource`, and `/.well-known/oauth-protected-resource/mcp`.
 
 ## Choose a setup path
@@ -27,7 +33,7 @@ a PAT.
 
 ## Claude Code
 
-Use Claude Code 2.1.232 or later and pin its v2 MCP runtime before installing:
+Use Claude Code 2.1.232 or later. The 2025 `initialize` handshake works on any runtime; pin the v2 runtime only to use `2026-07-28` features such as Tasks and in-protocol approval prompts:
 
 ```bash
 claude --version
@@ -36,7 +42,8 @@ export MCP_PROTOCOL_NEGOTIATION=auto
 ```
 
 The overrides prevent cloud-hosted, app-gateway, and disabled feature-fetch
-environments from falling back to the legacy runtime.
+environments from falling back to the legacy runtime, which still connects over
+the 2025 handshake.
 
 Add the published DropHaul marketplace, then install its plugin:
 
@@ -99,8 +106,10 @@ Free accounts support one custom connector.
 
 Enable it per conversation from the **+** button → **Connectors**.
 
-DropHaul supports Client ID Metadata Documents (CIMD) for public OAuth clients;
-it does not advertise a dynamic client registration endpoint. If Claude cannot
+DropHaul supports Client ID Metadata Documents (CIMD) and RFC 7591 dynamic
+client registration for public OAuth clients. Registration accepts only public
+authorization-code clients with PKCE, grants nothing until a user consents, and
+is rate limited per source. If Claude cannot
 connect, use the
 [troubleshooting guide](troubleshooting.md) and contact
 [support](mailto:support@drophaul.app); do not invent client credentials or
@@ -124,6 +133,9 @@ The server publishes closed OpenAI connector `search` and `fetch` shapes: `searc
 ChatGPT's connector surface changes frequently. If the menu labels differ, follow OpenAI's current [Connect your MCP server to ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt) guide.
 
 ## Codex CLI (client-managed OAuth)
+
+The `codex features` lines are optional: Codex connects over the 2025 handshake
+without them, and they only enable the newer `2026-07-28` protocol.
 
 The published repository is a Codex marketplace:
 
@@ -158,7 +170,7 @@ default_tools_approval_mode = "writes"
 
 Use `codex mcp list` to inspect configured servers and `/mcp` inside the Codex
 TUI to see active ones. The hosted OAuth flow supports public-client
-registration through CIMD. The PAT flow below remains an advanced
+registration through CIMD or dynamic client registration. The PAT flow below remains an advanced
 local/developer setup only.
 
 ## Advanced: personal access token

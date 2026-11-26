@@ -17,8 +17,8 @@ Claude.ai, Cowork, and Claude Desktop use the same remote connector. Claude conn
 
 DropHaul uses OAuth authorization code with PKCE S256 and refresh-token rotation. Complete the client-managed consent flow shown by Claude; do not paste a bearer value or confidential client secret into the connector.
 
-DropHaul publishes Client ID Metadata Documents (CIMD) for public OAuth clients
-and does not advertise a dynamic client registration endpoint. If **Connect**
+DropHaul supports Client ID Metadata Documents (CIMD) and RFC 7591 dynamic
+client registration for public OAuth clients. If **Connect**
 reports an unknown or unsupported client, contact
 [DropHaul support](mailto:support@drophaul.app) rather than inventing a client
 configuration.

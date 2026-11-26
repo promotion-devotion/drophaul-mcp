@@ -21,6 +21,7 @@
 		"category": "Business & Operations",
 		"capabilities": ["Review dispatch", "Plan routes", "Manage invoices"],
 		"websiteURL": "https://www.drophaul.app/mcp",
+		"supportURL": "https://www.drophaul.app/contact",
 		"privacyPolicyURL": "https://www.drophaul.app/privacy",
 		"termsOfServiceURL": "https://www.drophaul.app/terms",
 		"brandColor": "#009FE3",
