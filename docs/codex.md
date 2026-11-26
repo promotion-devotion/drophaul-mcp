@@ -13,10 +13,11 @@ Use the client-managed OAuth setup for normal installs. Do not configure a PAT a
 The generated repository includes a repo-scoped marketplace at
 `.agents/plugins/marketplace.json` and an installable package at
 `plugins/drophaul`.
-DropHaul uses the strict `2026-07-28` MCP wire contract. On Codex 0.148.0 the
-matching runtime is still an under-development feature and is disabled by
-default, so enable it and verify that its effective state is `true` before
-installing or connecting:
+DropHaul serves the 2025 `initialize` handshake and MCP `2026-07-28` on the
+same endpoint, so Codex connects with its default runtime. To use the newer
+protocol (Tasks and in-protocol approval prompts), enable the matching
+under-development feature on Codex 0.148.0 and verify that its
+effective state is `true`:
 
 ```sh
 codex features enable mcp_2026_07_28
@@ -41,10 +42,10 @@ codex mcp get drophaul --json
 
 The browser flow signs in to DropHaul, requires an explicit company selection, and shows the requested scopes. Codex stores and refreshes OAuth credentials separately from the repository. Use `codex mcp logout drophaul` to clear them.
 
-DropHaul publishes Client ID Metadata Documents (CIMD) for public OAuth clients.
-Complete the client-managed OAuth flow; no separate client registration step is
-required. If login reports an unknown or unsupported client, verify that Codex
-supports CIMD and contact [support](mailto:support@drophaul.app).
+DropHaul supports Client ID Metadata Documents (CIMD) and RFC 7591 dynamic
+client registration for public OAuth clients. Complete the client-managed OAuth
+flow; no separate client registration step is required. If login reports an
+unknown or unsupported client, contact [support](mailto:support@drophaul.app).
 
 ## Advanced PAT setup
 
@@ -73,7 +74,7 @@ Start a new Codex session after setting the environment variable. Never put the 
 1. Run `whoami`; verify the user, company, and roles before reading business data.
 2. Run one bounded read, such as `get_schedule` for an explicit date.
 3. For a staging CRUD check, create one disposable record with a unique idempotency key, fetch it by its public display ID, retry the exact create with the same key, and verify there is still one record.
-4. Revoke the credential in **Settings → API Tokens** or disconnect OAuth, then verify the next call is denied.
+4. Revoke the credential in **Settings → Developers → API keys** or disconnect OAuth, then verify the next call is denied.
 
 Use the [agent-testing lanes](agent-testing.md) for coding-agent work. Read [security](security.md) before enabling writes and [troubleshooting](troubleshooting.md) when setup fails.
 

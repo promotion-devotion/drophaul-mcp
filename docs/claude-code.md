@@ -1,8 +1,10 @@
 # Use DropHaul from Claude Code
 
 Claude Code can install the DropHaul plugin or connect directly. Use Claude
-Code 2.1.232 or later, whose v2 MCP runtime can negotiate DropHaul's strict
-`2026-07-28` wire contract. Before installing, verify the runtime explicitly:
+Code 2.1.232 or later. DropHaul serves the 2025 `initialize` handshake and MCP
+`2026-07-28` on the same endpoint, so either Claude Code runtime connects. To
+use the newer protocol (Tasks and in-protocol approval prompts), verify and
+pin the v2 runtime explicitly:
 
 ```sh
 claude --version

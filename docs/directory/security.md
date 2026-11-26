@@ -8,7 +8,9 @@ idempotency receipt, so the same approved intent writes once.
 
 DropHaul does not expose payment or refund changes, provider connection changes,
 company/billing/team administration, broadcast sends, imports, migrations,
-superadmin/development/seed tools, vault credentials, proof or magic links,
+superadmin/development/seed tools (the staff support inbox is the single
+exception, available only to credentials a superadmin granted `support:*`
+scopes and re-verified on every request), vault credentials, proof or magic links,
 media/signature/tag capture, or live navigation.
 
 Report vulnerabilities to [security@drophaul.app](mailto:security@drophaul.app).

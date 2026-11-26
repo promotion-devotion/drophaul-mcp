@@ -28,7 +28,7 @@ Agents and QA runs create throwaway accounts instead of reusing real ones. A dis
 - uses an address on the reserved `@agents.drophaul.test` domain (`.test` is reserved by RFC 2606, so mail is never delivered);
 - is recorded in the `disposableAccounts` table with a public `displayId` (`DSP-…`) and an expiry;
 - is created already email-verified, with its own company;
-- is never sent to PostHog, and never gets a Stripe customer, a referral code, welcome or drip emails, a Resend audience entry, or a marketing lead notification.
+- never gets a Stripe customer, a referral code, welcome or drip emails, a Resend audience entry, or a marketing lead notification.
 
 Public sign-up can never create a reserved-domain account, on any deployment, whatever the settings below. Only the disposable path can, because it signs its own sign-up request with a key the public endpoints do not have.
 
@@ -102,6 +102,13 @@ bunx convex run --deployment <staging deployment> seed:deleteDisposableAccount \
   '{"email":"qa-2026-09-23-a@agents.drophaul.test"}'
 ```
 
+To QA the first-run setup wizard, pass `"withoutCompany":true`. The account is signed up, recorded, and email-verified, but gets no company, app profile, fixtures, or PAT, so its first sign-in lands in onboarding. It is refused in production mode, and the company the wizard creates is removed by the same deletion and expiry cleanup because the account is its only member:
+
+```sh
+bunx convex run --deployment <staging deployment> seed:agentSignupAndSeed \
+  '{"email":"qa-2026-09-23-b@agents.drophaul.test","password":"<unique strong password>","withoutCompany":true,"label":"onboarding qa","expiresInDays":2}'
+```
+
 On staging, `seed:agentSignupAndSeed` also lays down a small fixture dataset and returns an agent PAT in `token`. The PAT is printed once, so treat the output as a secret and do not paste it into issues, logs, or prompts.
 
 ### Deletion and cleanup
@@ -109,6 +116,18 @@ On staging, `seed:agentSignupAndSeed` also lays down a small fixture dataset and
 Deletion removes the Better Auth user with its sessions, accounts, and memberships; every company where the account is the only member, with all of that company's data; and the app profile with its user-scoped rows (tokens, devices, preferences). If another member was added to one of its companies, the company stays and only the disposable account's membership is removed. A repeat delete returns `already_deleted`. Deletion refuses any account that is not both on the reserved domain and recorded in `disposableAccounts`.
 
 Automatic cleanup: the `purge-expired-disposable-accounts` cron runs daily at 04:40 UTC on every deployment where disposable accounts are enabled, production included, and deletes accounts past `expiresAt`, 20 per batch, scheduling another batch while more are due. A failed purge is retried the next day. Deletion leaves a tombstone record for 30 days so repeated deletes stay no-ops. Where the feature is disabled, the cron does nothing and logs `disposableAccounts.purge_skipped`. Its logs carry counts only, never addresses.
+
+### Mail capture for end-to-end sign-up tests
+
+Public sign-up, verification, and password-reset flows send real mail through Resend. To test them end to end without sending anything, set `E2E_MAIL_CAPTURE=true` on a development, test, or staging deployment. Capture applies only when all three hold: `E2E_MAIL_CAPTURE` is exactly `true`, `CONVEX_ENV` is `development`, `test`, or `staging`, and the recipient passes `isTestEmail` (for example `<purpose>-<id>@test.drophaul.app` from `makeTestEmail`). Production, an unset `CONVEX_ENV`, and every other recipient keep sending through Resend unchanged.
+
+Captured messages are stored in `capturedEmails` for 24 hours and pruned on insert. Read the newest one with the operator CLI; the function is internal and not part of the public or MCP surface:
+
+```sh
+bunx convex run capturedEmails:latest '{"to":"signup-abc123@test.drophaul.app","since":1800000000000}'
+```
+
+It returns `subject`, `html`, `createdAt`, the first link as `url` (with all `links`), and `otp` for OTP mails, or `null` when nothing arrived after `since`. Public sign-up still rejects `@agents.drophaul.test`; use a `@test.drophaul.app` address for sign-up tests.
 
 ## Lane 2: official Convex development MCP
 
@@ -123,6 +142,10 @@ bunx convex mcp start \
 ```
 
 This leaves the function specification, normal function runner, status, and insights tools available on the personal dev deployment while disabling environment-secret access and broad data/log surfaces. Do not add `--prod`, `--cautiously-allow-production-pii`, or `--dangerously-enable-production-deployments`.
+
+The project `.mcp.json` registers exactly this server as `convex`, scoped to the backend package (`--project-dir`). `--deployment dev` selects your Convex account's dev deployment for the project; on the owner's account that is shared staging (`rightful-aardvark-450`), so treat `run` there as a staging write.
+
+The official Convex Claude Code plugin (`convex@claude-plugins-official`) is disabled for this project in `.claude/settings.json`: its end-of-turn hook runs `convex dev --once`, which would push uncommitted branch code to that deployment. Its write-time linter still runs through the project hook `.claude/hooks/convex-lint.mjs` when the plugin is installed at user scope.
 
 ## Lane 3: production
 
@@ -139,40 +162,20 @@ Never:
 - disable preview/confirmation or idempotency checks;
 - copy a production credential into CI, an issue, a prompt, or a repository file.
 
-## Foreman secret smoke test
-
-Most Foreman seal → server-proof → decrypt tests run on fabricated key material. The guarded live-secret smoke test is the one check that reads a development deployment's configuration and exercises the real path.
-
-It is opt-in and skips visibly without the guard, so it never runs in CI or in a normal `bun run test`. Run it from the repo root:
-
-```sh
-bun run test:foreman-secrets-smoke
-```
-
-That script is the only supported invocation: it enables the guarded smoke suite and runs the focused test. Without the guard, the suite is skipped rather than contacting a live deployment.
-
-It is deliberately **not** wired into the CI `test` job. It reaches a live staging Convex deployment and reads the Vercel project env, both of which need an authenticated CLI session that CI does not have and must not be handed (see the lane rules above). A CI job that cannot authenticate either reddens every PR or gets quietly marked continue-on-error — both are worse than an honest manual gate. Run it by hand after changing anything on the seal → server-proof → decrypt path, and after rotating either secret.
-
-- Target defaults to the staging deployment. Override with `FOREMAN_SMOKE_CONVEX_DEPLOYMENT`; the production deployment and any `prod` ref are refused before a single CLI call.
-- Requires an authenticated Convex CLI and, for the Vercel-side presence check, an authenticated Vercel CLI.
-- With the guard set but a secret missing, it fails and names the variable. It never skips its way to green.
-- It writes nothing: `convex env get` and the Vercel project-env API are read-only, and no Convex document or file is created.
-- No plaintext secret is printed, logged, or placed in an assertion message.
-
-`FOREMAN_INTERNAL_SECRET` is stored on Vercel as a **sensitive** variable, so Vercel never returns its value. Equality between the Vercel and Convex copies therefore cannot be machine-checked; the test asserts the Vercel variable exists, targets the environment paired with the deployment, and has not been downgraded to a readable kind. A genuine mismatch still surfaces only as a runtime `FOREMAN_SERVER_PROOF_INVALID` from the deployed caller.
-
 ## Evidence checklist
 
 Record the deployment alias, client and version, credential kind, company fixture, scopes, tool names, public display IDs, request IDs, and pass/fail result. Redact all bearer values, authorization codes, refresh tokens, signed consent queries, customer contact data, and internal database IDs.
 
 ## Reproducible hosted-client acceptance
 
-The release gate is modern-first. Before a Claude, ChatGPT, or Codex
+The release gate is modern-first and also proves the 2025 era. Before a Claude, ChatGPT, or Codex
 walkthrough, exercise the stateless `2026-07-28` flow — `server/discover` →
 `tools/list` → authenticated `tools/call` — with the secret-safe harness. It
 also asserts every required modern wire family: `resultType`, server identity,
 the intended cache hints, unsupported-version errors, unknown-method HTTP 404,
-removed initialize, and session-method HTTP 405 responses. Pass the credential by file so it never
+the modern-enveloped `initialize` 404, a `2025-06-18` `initialize` and `tools/list`
+that succeed without a session or `resultType`, and session-method HTTP 405
+responses. Pass the credential by file so it never
 appears in shell history or process arguments:
 
 ```sh
@@ -192,9 +195,11 @@ seconds, maximum 4 seconds, and first-sample p95 4 seconds. Override them with
 `MCP_ACCEPTANCE_WARM_MAX_MS`, and `MCP_ACCEPTANCE_FIRST_SAMPLE_P95_MS`. A timeout,
 network error, 5xx, or other non-success response fails the operation gate.
 
-The public endpoint is deliberately modern-only. A `2025-11-25` initialize
-request and a modern-enveloped `initialize` request must both fail; GET/DELETE
-session operations must return 405. The release report contains only protocol
+The public endpoint serves both eras. A `2025-06-18` initialize request must
+negotiate statelessly, while a modern-enveloped `initialize` request must still
+fail with 404; GET/DELETE session operations must return 405. A `2025`-era
+write call must never run without the `plan_changes` and `apply_changes`
+approval path. The release report contains only protocol
 version, credential kind, pass/fail checks, and per-operation first/subsequent latency.
 It never serializes bearer material, response payloads, request IDs, public
 record IDs, or tenant identifiers. These automate

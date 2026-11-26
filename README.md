@@ -44,7 +44,7 @@ connection.
 
 ### 1. Claude Code
 
-Use Claude Code 2.1.232 or later and pin its v2 MCP runtime before installing:
+Use Claude Code 2.1.232 or later. The 2025 `initialize` handshake works on any runtime; pin the v2 runtime only to use `2026-07-28` features such as Tasks and in-protocol approval prompts:
 
 ```bash
 claude --version
@@ -91,9 +91,9 @@ Connectors**.
 
 Enable it per conversation from the **+** button → **Connectors**.
 
-DropHaul publishes Client ID Metadata Documents (CIMD) for public OAuth clients.
-Complete the client-managed OAuth flow; no separate client registration step is
-required. If Claude reports an unknown or unsupported client, contact
+DropHaul supports Client ID Metadata Documents (CIMD) and RFC 7591 dynamic
+client registration for public OAuth clients. Complete the client-managed OAuth
+flow; no separate client registration step is required. If Claude reports an unknown or unsupported client, contact
 [support@drophaul.app](mailto:support@drophaul.app) rather than inventing a
 client configuration or pasting unrelated credentials.
 
@@ -102,7 +102,8 @@ More detail: [`docs/claude-ai.md`](docs/claude-ai.md).
 ### 3. Codex CLI
 
 The repository is also a Codex marketplace. Add it and install DropHaul from
-**Plugins** in the ChatGPT desktop app:
+**Plugins** in the ChatGPT desktop app. The `codex features` lines are optional: Codex connects over the 2025 handshake
+without them, and they only enable the newer `2026-07-28` protocol.
 
 ```bash
 codex features enable mcp_2026_07_28
@@ -170,7 +171,7 @@ access token is only for an operator who deliberately configures a direct local 
 
 1. Sign in at [DropHaul API Tokens](https://drophaul.app/settings/api-tokens) as an **owner** or **admin**. No other role
    can mint or revoke tokens.
-2. Open **Settings → API Tokens**.
+2. Open **Settings → Developers → API keys**.
 3. Choose kind **`operator`** (a human's own client; default 90 days, maximum 365). The `agent` kind is
    for automated testing against non-production deployments only — see
    [`docs/agent-testing.md`](docs/agent-testing.md).

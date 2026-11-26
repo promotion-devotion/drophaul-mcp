@@ -66,6 +66,27 @@ model can reach at all.
 - **Which tools stay enabled.** Enable only what a task needs, especially in
   automated modes.
 
+## Calling Foreman with `run_foreman`
+
+`run_foreman` hands a question to DropHaul's own Foreman and returns its answer. The model, prompt and tool set
+are DropHaul's; the host supplies only the user's words and the credential. Its tool set is bounded by that
+credential's scopes, so a read-only credential never lets Foreman reach a write tool, and Foreman cannot call
+`run_foreman` itself.
+
+- **Conversations.** The result carries a `conversation` handle. Passing it back continues the same Foreman chat.
+  Omitting it starts a new one. A handle is only valid for the credential's own user; any other handle is rejected
+  with `-32602`.
+- **With the tasks extension** the call returns a task. Poll `tasks/get`; when Foreman wants to make a change the
+  task is `input_required` and carries one `approval_<key>` form request. Answer it with `tasks/update`. Partial
+  answer text is in `_meta["io.drophaul/foreman"]`.
+- **Without it** the call waits up to 50 seconds and then answers. A change needing approval comes back as
+  `input_required` with a form elicitation and a signed `requestState`; retry the same call with `inputResponses`
+  and the `requestState`. A run still working after the wait comes back as `input_required` with only a
+  `requestState`: retry the same call to keep waiting.
+- **Approval stays human.** The form carries a summary of the proposed change and a boolean `approve`. As with every
+  other confirmation, a host that answers it without asking the user removes the gate. A client that cannot
+  elicit is told the run is waiting, and the user can approve it in the DropHaul app instead.
+
 ## The residue
 
 Two gaps cannot be closed in DropHaul code, and this is the honest statement of
